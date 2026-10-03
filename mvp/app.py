@@ -204,11 +204,12 @@ with tab_extract:
                 if not reviewer_email or "@" not in reviewer_email:
                     st.warning("Please enter a valid email address.")
                 else:
-                    # clear ALL previous results so nothing shows while new extraction runs
-                    st.session_state.extraction_results.clear()
-                    st.session_state.validation_results.clear()
-                    st.session_state.corrections.clear()
-                    st.session_state.signoffs.clear()
+                    # Clear ONLY this lease's previous results, so a re-run starts
+                    # fresh but all other analysed leases stay available for the
+                    # Acquisition Proposal and Review History tabs.
+                    for store in ("extraction_results", "validation_results",
+                                  "corrections", "signoffs", "review_ids"):
+                        st.session_state[store].pop(selected, None)
                     st.session_state.last_selected = None
 
                     lease_text = st.session_state.lease_texts[selected]
@@ -235,11 +236,11 @@ with tab_extract:
                         "GPT-4o is extracting all structured fields and flagged clauses using "
                         "a Portuguese law-aware prompt. Maps SENHORIO → landlord, "
                         "ARRENDATÁRIO → tenant, and checks 10 high-risk NRAU clause patterns. "
-                        "This usually takes 10-40 seconds, depending on lease length and "
+                        "This usually takes 15-45 seconds, depending on lease length and "
                         "API load. Please do not refresh the page."
                     )
 
-                    with timed_spinner("GPT-4o working... usually 10-40 seconds"):
+                    with timed_spinner("GPT-4o working... usually 15-45 seconds"):
                         result = process_lease(
                             lease_text,
                             filename=selected,
