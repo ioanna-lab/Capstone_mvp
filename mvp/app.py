@@ -186,11 +186,12 @@ with tab_extract:
             if not reviewer_email or "@" not in reviewer_email:
                 st.warning("Please enter a valid email address.")
             else:
-                # clear previous results for this lease before running
-                st.session_state.extraction_results.pop(selected, None)
-                st.session_state.validation_results.pop(selected, None)
-                st.session_state.corrections.pop(selected, None)
-                st.session_state.signoffs.pop(selected, None)
+                # clear ALL previous results so nothing shows while new extraction runs
+                st.session_state.extraction_results.clear()
+                st.session_state.validation_results.clear()
+                st.session_state.corrections.clear()
+                st.session_state.signoffs.clear()
+                st.session_state.last_selected = None
 
                 lease_text = st.session_state.lease_texts[selected]
 
