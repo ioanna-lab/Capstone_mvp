@@ -1,123 +1,95 @@
 """
-RAG pipeline for the Lease Review Assistant.
-Ingests uploaded lease documents into a local Chroma vector store
-and answers questions across the full set.
-
-Why Chroma local (not Pinecone):
-- No API key needed
-- Runs entirely in memory for the session
-- Fast enough for 5 documents
-- Easy to reset between demo runs
+Lightweight in-memory RAG — no Chroma, no C++ dependencies.
+Uses simple TF-IDF-style keyword search over lease text chunks.
+Keeps the same build_vectorstore / query_portfolio interface.
 """
 
+import re
+from typing import Any
+from openai import OpenAI
 from dotenv import load_dotenv
+
 load_dotenv()
-
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_community.vectorstores import Chroma
-from langchain_core.messages import SystemMessage, HumanMessage
-from langchain_core.documents import Document
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langsmith import traceable
-
-from prompts import RAG_SYSTEM, RAG_USER
+_client = None
 
 
-# shared instances
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-
-# text splitter: 1000 char chunks, 150 char overlap
-# why these values: commercial lease clauses are typically 200-600 chars;
-# 1000 char chunks keep clauses intact while 150 char overlap prevents
-# a clause being split across two chunks with no context on either side
-splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1000,
-    chunk_overlap=150,
-    separators=["\n\n", "\n", ". ", " ", ""],
-)
+def _get_client():
+    global _client
+    if _client is None:
+        _client = OpenAI()
+    return _client
 
 
-def build_vectorstore(documents: dict) -> Chroma:
+def _chunk_text(text: str, chunk_size: int = 800, overlap: int = 100) -> list[str]:
+    """Split text into overlapping chunks."""
+    words = text.split()
+    chunks = []
+    i = 0
+    while i < len(words):
+        chunk = " ".join(words[i : i + chunk_size])
+        chunks.append(chunk)
+        i += chunk_size - overlap
+    return chunks
+
+
+def _score(chunk: str, query: str) -> float:
+    """Simple keyword overlap score (case-insensitive)."""
+    query_words = set(re.findall(r"\w+", query.lower()))
+    chunk_words = re.findall(r"\w+", chunk.lower())
+    if not chunk_words:
+        return 0.0
+    matches = sum(1 for w in chunk_words if w in query_words)
+    return matches / len(chunk_words)
+
+
+def build_vectorstore(lease_texts: dict[str, str]) -> dict[str, Any]:
     """
-    Build an in-memory Chroma vector store from a dict of {filename: text}.
-    Each chunk is tagged with its source filename as metadata
-    so the LLM can cite which document an answer came from.
-
-    documents: dict mapping filename -> full extracted text
-    returns: a Chroma vectorstore ready for similarity search
+    Build an in-memory 'vectorstore' (just chunked text + metadata).
+    lease_texts: {filename: full_text}
+    Returns a dict that query_portfolio understands.
     """
-    docs = []
-    for filename, text in documents.items():
-        chunks = splitter.split_text(text)
-        for i, chunk in enumerate(chunks):
-            docs.append(Document(
-                page_content=chunk,
-                metadata={
-                    "source": filename,
-                    "chunk_index": i,
-                    "total_chunks": len(chunks),
-                }
-            ))
-
-    vectorstore = Chroma.from_documents(
-        documents=docs,
-        embedding=embeddings,
-        collection_name="lease_portfolio",
-    )
-    return vectorstore
+    chunks = []
+    for filename, text in lease_texts.items():
+        for chunk in _chunk_text(text):
+            chunks.append({"filename": filename, "text": chunk})
+    return {"chunks": chunks}
 
 
-@traceable(name="query_lease_portfolio")
-def query_portfolio(vectorstore: Chroma, question: str, k: int = 6) -> dict:
+def query_portfolio(vectorstore: dict[str, Any], question: str) -> dict[str, Any]:
     """
-    Answer a question across all ingested leases using RAG.
-
-    Steps:
-    1. Embed the question
-    2. Retrieve k most similar chunks from Chroma
-    3. Build context string with source citations
-    4. Send to GPT-4o with RAG prompt
-    5. Return answer + source chunks used
-
-    k=6: retrieve 6 chunks which typically spans 2-3 different leases,
-    giving the LLM enough context for cross-document comparison questions.
-
-    Decorated with @traceable so LangSmith logs the retrieval + generation.
+    Find the most relevant chunks and ask GPT-4o to answer the question.
+    Returns {"answer": str, "sources": list[str]}.
     """
-    # step 1+2: retrieve relevant chunks
-    retrieved = vectorstore.similarity_search(question, k=k)
+    chunks = vectorstore.get("chunks", [])
+    if not chunks:
+        return {"answer": "No leases indexed yet.", "sources": []}
 
-    if not retrieved:
-        return {
-            "answer": "No relevant content found in the uploaded leases for this question.",
-            "sources": [],
-            "chunks_retrieved": 0,
-        }
+    # rank chunks by keyword overlap
+    scored = sorted(chunks, key=lambda c: _score(c["text"], question), reverse=True)
+    top = scored[:5]
 
-    # step 3: build context string
     context_parts = []
-    sources_used = []
-    for doc in retrieved:
-        source = doc.metadata.get("source", "unknown")
-        context_parts.append(f"[From: {source}]\n{doc.page_content}")
-        if source not in sources_used:
-            sources_used.append(source)
-
+    for c in top:
+        context_parts.append(f"[{c['filename']}]\n{c['text']}")
     context = "\n\n---\n\n".join(context_parts)
 
-    # step 4: generate answer
-    messages = [
-        SystemMessage(content=RAG_SYSTEM),
-        HumanMessage(content=RAG_USER.format(
-            question=question,
-            context=context,
-        )),
-    ]
-    response = llm.invoke(messages)
+    prompt = (
+        f"You are a Portuguese commercial real estate analyst.\n"
+        f"Answer the question using only the lease excerpts below.\n"
+        f"Be specific and cite the lease filename when relevant.\n\n"
+        f"Question: {question}\n\n"
+        f"Lease excerpts:\n{context}"
+    )
 
+    response = _get_client().chat.completions.create(
+        model="gpt-4o-2024-11-20",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=600,
+        temperature=0.1,
+    )
+
+    sources = list({c["filename"] for c in top})
     return {
-        "answer": response.content,
-        "sources": sources_used,
-        "chunks_retrieved": len(retrieved),
+        "answer": response.choices[0].message.content,
+        "sources": sources,
     }
