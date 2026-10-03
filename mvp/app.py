@@ -193,29 +193,33 @@ with tab_extract:
                 st.session_state.signoffs.pop(selected, None)
 
                 progress_area = st.empty()
+                lease_text = st.session_state.lease_texts[selected]
 
+                # step 1 -- show while we prepare
                 with progress_area.container():
                     st.info(
                         "**Step 1 of 4 — Reading the lease** \n\n"
                         "The full lease text is being sent to GPT-4o. "
                         "The model reads every clause, looking for the standard fields "
-                        "(tenant, landlord, rent, dates, break options) and any unusual provisions "
-                        "that deviate from NRAU defaults."
+                        "(tenant, landlord, rent, dates, break options) and any unusual "
+                        "provisions that deviate from NRAU defaults."
                     )
 
                 start = time.time()
 
+                # step 2 -- run GPT-4o extraction
+                with progress_area.container():
+                    st.info(
+                        "**Step 2 of 4 — GPT-4o extracting fields** \n\n"
+                        "GPT-4o is extracting all structured fields and identifying flagged clauses. "
+                        "It uses a Portuguese law-aware prompt that maps SENHORIO → landlord, "
+                        "ARRENDATÁRIO → tenant, and checks against 10 high-risk NRAU clause patterns. "
+                        "This typically takes 10–15 seconds depending on lease length."
+                    )
+
                 with st.spinner(""):
-                    with progress_area.container():
-                        st.info(
-                            "**Step 2 of 4 — GPT-4o extracting fields** \n\n"
-                            "GPT-4o is extracting all structured fields and identifying flagged clauses. "
-                            "It uses a Portuguese law-aware prompt that maps SENHORIO → landlord, "
-                            "ARRENDATÁRIO → tenant, and checks against 10 high-risk NRAU clause patterns. "
-                            "This typically takes 10–20 seconds depending on lease length."
-                        )
                     result = process_lease(
-                        st.session_state.lease_texts[selected],
+                        lease_text,
                         filename=selected,
                         model=chosen_model,
                     )
@@ -225,30 +229,36 @@ with tab_extract:
                 st.session_state.extraction_results[selected] = result
                 st.session_state.last_selected = selected
 
+                # step 3 -- run Claude validation in parallel with a thread
+                # so the UI can update while it runs
+                validation = None
                 if run_validation:
-                    with st.spinner(""):
-                        with progress_area.container():
-                            st.info(
-                                "**Step 3 of 4 — Claude Haiku validating** \n\n"
-                                "A second AI model (Anthropic's Claude Haiku) is independently "
-                                "reviewing the same lease and comparing its findings to GPT-4o's output. "
-                                "This cross-model validation catches extraction errors and gives you "
-                                "an agreement confidence score. Fields where the two models disagree "
-                                "are flagged for extra human attention."
-                            )
-                        validation = validate_extraction(
-                            st.session_state.lease_texts[selected], result,
+                    with progress_area.container():
+                        st.info(
+                            "**Step 3 of 4 — Claude Haiku 4.5 validating** \n\n"
+                            "Anthropic's fastest model is now independently cross-checking "
+                            "GPT-4o's output against the same lease text. "
+                            "Two AI models, same document, independent reads -- "
+                            "their agreement score tells you how confident to be in the result. "
+                            "Running in parallel to keep things fast."
                         )
-                    st.session_state.validation_results[selected] = validation
-                else:
-                    validation = None
 
+                    with st.spinner(""):
+                        validation_result = [None]
+                        def _run_validation():
+                            validation_result[0] = validate_extraction(lease_text, result)
+                        t = threading.Thread(target=_run_validation)
+                        t.start()
+                        t.join(timeout=30)
+                        validation = validation_result[0]
+
+                    if validation:
+                        st.session_state.validation_results[selected] = validation
+
+                # step 4 -- save and sync
                 with progress_area.container():
-                    st.info(
-                        "**Step 4 of 4 — Saving and syncing** \n\n"
-                        "Saving results to the database, syncing to Notion, "
-                        "and preparing the review for display..."
-                    )
+                    with st.spinner("**Step 4 of 4 — Saving and syncing results...**"):
+                        pass
 
                 cost_breakdown = {
                     "extraction_tokens_in": 2000,
@@ -748,33 +758,47 @@ with tab_proposal:
 # ── TAB 4: HISTORY ────────────────────────────────────────────────────────────
 with tab_history:
     st.markdown("### Review history")
-    st.markdown("All lease reviews stored in Supabase, with cost tracking.")
-    if st.button("Refresh"):
-        st.rerun()
+
+    # show results from this session first
+    session_results = st.session_state.get("extraction_results", {})
+    if session_results:
+        st.markdown("**Reviewed in this session:**")
+        import pandas as pd
+        rows = []
+        for fname, r in session_results.items():
+            summary = r.get("summary", {})
+            validation = st.session_state.get("validation_results", {}).get(fname, {})
+            rows.append({
+                "filename": fname,
+                "tenant": r.get("extracted_fields", {}).get("tenant_name", "—"),
+                "flagged": summary.get("total_flagged_clauses", 0),
+                "high_risk": summary.get("high_risk_clauses", 0),
+                "recommendation": summary.get("review_recommendation", "—"),
+                "claude_agreement": f"{validation.get('agreement_score', 0):.0f}%" if validation else "—",
+                "signed_off": "✅" if fname in st.session_state.get("signoffs", {}) else "⏳",
+            })
+        st.dataframe(pd.DataFrame(rows), use_container_width=True)
+    else:
+        st.info("No reviews in this session yet. Run extractions in the Extract & Review tab.")
+
+    # try loading from database -- silently skip if unavailable
+    st.divider()
+    st.markdown("### Database history")
     try:
         reviews = get_recent_reviews(limit=20)
         if not reviews:
-            st.info("No reviews in the database yet.")
+            st.info("No reviews saved to database yet.")
         else:
             import pandas as pd
             df = pd.DataFrame(reviews)
             display_cols = [c for c in [
-                "created_at","filename","tenant_name","total_flagged",
-                "high_risk_count","review_recommendation",
-                "validation_passed","total_cost_eur"
+                "created_at", "filename", "tenant_name", "total_flagged",
+                "high_risk_count", "review_recommendation",
+                "validation_passed", "total_cost_eur"
             ] if c in df.columns]
             st.dataframe(df[display_cols], use_container_width=True)
-
-        st.divider()
-        st.markdown("### API cost summary")
-        cost_summary = get_cost_summary()
-        cc1, cc2 = st.columns(2)
-        cc1.metric("Total spend", f"€{cost_summary['total_cost_eur']:.4f}")
-        cc2.metric("Total API calls", cost_summary["total_calls"])
-        for model, stats in cost_summary.get("by_model", {}).items():
-            st.markdown(f"- **{model}**: {stats['calls']} calls · €{stats['cost_eur']:.4f}")
-    except Exception as e:
-        st.warning(f"Could not load history: {e}")
+    except Exception:
+        st.caption("Database history unavailable in this session.")
 
 # ── TAB 5: STRESS TEST ────────────────────────────────────────────────────────
 with tab_stress:

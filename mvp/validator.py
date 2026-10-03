@@ -13,7 +13,7 @@ from portugal_law import get_cost_eur
 
 load_dotenv()
 
-VALIDATION_MODEL = "claude-haiku-4-5-20251001"
+VALIDATION_MODEL = "claude-haiku-4-5"
 
 
 def get_anthropic_client():
