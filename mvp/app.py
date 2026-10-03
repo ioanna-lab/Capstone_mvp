@@ -15,10 +15,22 @@ from datetime import datetime
 import streamlit as st
 from dotenv import load_dotenv
 
+load_dotenv()
+
+# disable telemetry and heavy parallelism to reduce startup memory on Render free tier
+os.environ["ANONYMIZED_TELEMETRY"] = "false"
+os.environ["CHROMA_TELEMETRY"] = "false"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 from utils import extract_text_from_pdf
 from extractor import process_lease
 from validator import validate_extraction, compare_models
-from rag import build_vectorstore, query_portfolio
+
+# RAG (Chroma) is the heaviest import — load lazily only when first used
+@st.cache_resource(show_spinner=False)
+def _get_rag():
+    from rag import build_vectorstore, query_portfolio
+    return build_vectorstore, query_portfolio
 from database import (
     save_lease_review, save_evaluation, save_cost,
     get_recent_reviews, get_cost_summary,
@@ -27,8 +39,6 @@ from notion_sync import push_review_to_notion
 from proposal import generate_proposal
 from notifier import send_extraction_email
 from portugal_law import get_cost_eur
-
-load_dotenv()
 
 RESULTS_DIR = Path("results")
 RESULTS_DIR.mkdir(exist_ok=True)
@@ -93,7 +103,8 @@ with st.sidebar:
                     new_files = True
         if new_files and st.session_state.lease_texts:
             with st.spinner("Building search index..."):
-                st.session_state.vectorstore = build_vectorstore(
+                _build_vs, _ = _get_rag()
+                st.session_state.vectorstore = _build_vs(
                     st.session_state.lease_texts
                 )
             st.success(f"{len(st.session_state.lease_texts)} lease(s) indexed.")
@@ -591,7 +602,8 @@ with tab_query:
         if st.button("Search leases", type="primary"):
             if question.strip():
                 with st.spinner("Searching..."):
-                    res = query_portfolio(st.session_state.vectorstore, question)
+                    _, _query_vs = _get_rag()
+                    res = _query_vs(st.session_state.vectorstore, question)
                 st.markdown("### Answer")
                 st.markdown(res["answer"])
                 st.caption(
@@ -812,7 +824,7 @@ with tab_stress:
         )
         if st.button("▶ Run determinism check (3 runs)"):
             results_det = []
-            with st.spinner("Running 3 identical extractions..."):
+            with st.spinner("Running 3 identical extractions (~60s)..."):
                 for i in range(3):
                     r = process_lease(
                         st.session_state.lease_texts[det_lease],
@@ -820,23 +832,43 @@ with tab_stress:
                     )
                     results_det.append(r.get("extracted_fields", {}))
 
-            reference = results_det[0]
-            mismatches = []
-            for run_idx, run_result in enumerate(results_det[1:], start=2):
-                for field, value in reference.items():
-                    if run_result.get(field) != value:
-                        mismatches.append({
-                            "run": run_idx, "field": field,
-                            "run_1": str(value)[:60],
-                            "this_run": str(run_result.get(field))[:60],
-                        })
+            import pandas as pd
 
+            reference = results_det[0]
+            non_null = sum(1 for v in reference.values() if v is not None)
+            st.markdown(f"**Fields extracted:** {non_null} non-null fields across 3 runs")
+
+            # build full comparison table
+            comparison = []
+            mismatches = []
+            for field in reference:
+                vals = [str(r.get(field, ""))[:60] for r in results_det]
+                identical = len(set(vals)) == 1
+                comparison.append({
+                    "field": field,
+                    "run_1": vals[0],
+                    "run_2": vals[1],
+                    "run_3": vals[2],
+                    "match": "✅" if identical else "❌",
+                })
+                if not identical:
+                    mismatches.append(field)
+
+            # verdict
             if not mismatches:
                 st.success(
                     "✅ All 3 runs produced identical output. "
                     "Determinism confirmed — temperature=0 is working correctly."
                 )
             else:
-                st.warning(f"{len(mismatches)} field(s) differed across runs.")
-                import pandas as pd
-                st.dataframe(pd.DataFrame(mismatches), use_container_width=True)
+                st.warning(
+                    f"❌ {len(mismatches)} field(s) differed: {', '.join(mismatches)}"
+                )
+
+            # always show the comparison table
+            st.markdown("**Field-by-field comparison across 3 runs:**")
+            st.dataframe(
+                pd.DataFrame(comparison),
+                use_container_width=True,
+                height=350,
+            )
