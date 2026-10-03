@@ -1,0 +1,14 @@
+langchain==0.3.7
+langchain-openai==0.2.6
+langchain-community==0.3.7
+langchain-text-splitters==0.3.2
+chromadb==0.5.18
+streamlit==1.40.0
+pypdf==5.1.0
+langsmith==0.1.147
+python-dotenv==1.0.1
+tiktoken==0.8.0
+openai==1.54.3
+anthropic==0.39.0
+supabase==2.9.1
+notion-client==2.2.1

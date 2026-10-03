@@ -1,0 +1,83 @@
+{
+  "meta": {
+    "filename": "lease3_lisbon_office.pdf",
+    "model": "gpt-4o",
+    "disclaimer": "AI-generated draft. Every field must be reviewed and verified by a qualified lawyer before use in any legal or financial decision."
+  },
+  "summary": {
+    "total_flagged_clauses": 3,
+    "high_risk_clauses": 2,
+    "medium_risk_clauses": 1,
+    "low_risk_clauses": 0,
+    "review_recommendation": "PRIORITY REVIEW REQUIRED \u2014 high risk clauses identified"
+  },
+  "extracted_fields": {
+    "tenant_name": "NovaTech Solutions Lda.",
+    "landlord_name": "Tejo Property Fund SICAV-FIA",
+    "property_address": "Avenida Dom Jo\u00e3o II 35, 1990-083 Lisbon, Portugal",
+    "lease_commencement_date": "2022-07-01",
+    "lease_expiry_date": "2032-06-30",
+    "break_option_dates": [
+      {
+        "date": "2027-06-30",
+        "conditions": [
+          "written notice given to Landlord no later than 30 June 2026",
+          "Tenant has vacated the Premises and returned them in full repair and compliance with all Tenant obligations by the Break Date",
+          "payment of a break premium of EUR 480,000",
+          "no rent arrears or subsisting breach of any covenant at the Break Date"
+        ]
+      }
+    ],
+    "rent_amount": "EUR 960,000",
+    "rent_review_mechanism": "The rent shall be reviewed on 1 July 2025 and every three years thereafter, upward only to open market rent.",
+    "rent_escalation_schedule": {
+      "increase": "2.5%",
+      "effective_date": "2023-07-01"
+    },
+    "security_deposit": {
+      "amount": "EUR 240,000",
+      "terms": "held by the Landlord without obligation to pay interest and may be applied by the Landlord against any breach of the Tenant's obligations without prior notice to the Tenant."
+    },
+    "permitted_use": "high-quality office use",
+    "assignment_rights": "Assignment and subletting of the Premises are absolutely prohibited.",
+    "tenant_break_conditions": "All break conditions must be satisfied.",
+    "service_charge": {
+      "amount": "EUR 96,000",
+      "terms": "subject to annual reconciliation"
+    },
+    "key_tenant_obligations": [
+      "pay rent and all other sums reserved by this Agreement on the due dates",
+      "keep the Premises in good repair",
+      "comply with all applicable laws",
+      "not use the Premises for any purpose other than high-quality office use",
+      "maintain employer's liability insurance of EUR 10,000,000 and public liability insurance of EUR 10,000,000"
+    ],
+    "key_landlord_obligations": [
+      "maintain the structure and common parts of the building in good repair",
+      "provide the services set out in the service charge schedule"
+    ]
+  },
+  "flagged_clauses": [
+    {
+      "clause_type": "Break option",
+      "risk_level": "high",
+      "quoted_text": "payment of a break premium of EUR 480,000 (equivalent to six months rent)",
+      "plain_language_explanation": "The requirement for a substantial break premium is unusual and could deter the Tenant from exercising the break option. This creates a financial burden that may not be standard in many leases.",
+      "recommended_action": "Review the necessity and reasonableness of the break premium with the Tenant's financial team."
+    },
+    {
+      "clause_type": "Assignment restriction",
+      "risk_level": "high",
+      "quoted_text": "Assignment and subletting of the Premises are absolutely prohibited.",
+      "plain_language_explanation": "This absolute prohibition on assignment and subletting is quite restrictive and may limit the Tenant's flexibility to manage their lease. Such clauses can be seen as overly harsh and may pose a risk if the Tenant's circumstances change.",
+      "recommended_action": "Consider negotiating for more flexible assignment and subletting terms."
+    },
+    {
+      "clause_type": "Service charge",
+      "risk_level": "medium",
+      "quoted_text": "The Landlord shall have absolute discretion as to the services to be provided and the costs to be recovered through the service charge.",
+      "plain_language_explanation": "Granting the Landlord absolute discretion over service charges can lead to unpredictable costs for the Tenant. This lack of transparency may result in financial strain if service costs increase significantly.",
+      "recommended_action": "Seek clarification on the criteria for service charge determination and consider negotiating for a cap on increases."
+    }
+  ]
+}

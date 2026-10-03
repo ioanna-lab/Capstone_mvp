@@ -1,0 +1,207 @@
+{
+  "result": {
+    "meta": {
+      "filename": "PT_0001_office_Porto.pdf",
+      "model": "gpt-4o",
+      "disclaimer": "AI-generated draft. Every field must be reviewed and verified by a qualified lawyer before use in any legal or financial decision.",
+      "reviewer_email": "ioannarenta@gmail.com"
+    },
+    "summary": {
+      "total_flagged_clauses": 0,
+      "high_risk_clauses": 0,
+      "medium_risk_clauses": 0,
+      "low_risk_clauses": 0,
+      "review_recommendation": "STANDARD REVIEW \u2014 no high-risk clauses identified"
+    },
+    "extracted_fields": {
+      "tenant_name": "ABC Com\u00e9rcio Lda",
+      "landlord_name": "XYZ Investimentos SA",
+      "property_address": "Rua das Flores, 123, 4\u00ba Andar, Lisboa",
+      "lease_commencement_date": "2023-01-01",
+      "lease_expiry_date": "2028-12-31",
+      "break_option_dates": [
+        {
+          "date": "2025-12-31",
+          "conditions": "Tenant must give 120 days notice"
+        }
+      ],
+      "rent_amount": "\u20ac2,500",
+      "rent_review_mechanism": "Linked to CPI",
+      "rent_escalation_schedule": "Annual increase based on CPI",
+      "security_deposit": "\u20ac7,500",
+      "permitted_use": "Office space",
+      "assignment_rights": "Requires landlord consent",
+      "tenant_break_conditions": [
+        "120 days notice after 1/3 of term"
+      ],
+      "service_charge": "\u20ac300 per month",
+      "key_tenant_obligations": [
+        "Maintain interior",
+        "Pay utilities"
+      ],
+      "key_landlord_obligations": [
+        "Structural repairs",
+        "Maintain common areas"
+      ]
+    },
+    "portugal_fields": {
+      "nif_tenant": "123456789",
+      "nif_landlord": "987654321",
+      "financas_registration": "Landlord must register with Finan\u00e7as",
+      "stamp_duty_clause": "Landlord bears stamp duty",
+      "governing_law": "Portuguese law",
+      "deposit_months": 3,
+      "cpi_index": "yes",
+      "automatic_renewal": "yes",
+      "notice_period_tenant_days": 120,
+      "notice_period_landlord_days": 240,
+      "early_termination_after_months": 12
+    },
+    "citations": {
+      "tenant_name": {
+        "page": 1,
+        "clause": "Clause 1.1",
+        "quote": "Tenant: ABC Com\u00e9rcio Lda"
+      },
+      "landlord_name": {
+        "page": 1,
+        "clause": "Clause 1.2",
+        "quote": "Landlord: XYZ Investimentos SA"
+      },
+      "property_address": {
+        "page": 1,
+        "clause": "Clause 2.1",
+        "quote": "Property: Rua das Flores, 123, 4\u00ba Andar, Lisboa"
+      },
+      "lease_commencement_date": {
+        "page": 2,
+        "clause": "Clause 3.1",
+        "quote": "Commencement Date: 2023-01-01"
+      },
+      "lease_expiry_date": {
+        "page": 2,
+        "clause": "Clause 3.2",
+        "quote": "Expiry Date: 2028-12-31"
+      },
+      "break_option_dates": {
+        "page": 3,
+        "clause": "Clause 4.1",
+        "quote": "Break option on 2025-12-31 with 120 days notice"
+      },
+      "rent_amount": {
+        "page": 2,
+        "clause": "Clause 5.1",
+        "quote": "Rent: \u20ac2,500 per month"
+      },
+      "rent_review_mechanism": {
+        "page": 3,
+        "clause": "Clause 5.2",
+        "quote": "Rent review linked to CPI"
+      },
+      "rent_escalation_schedule": {
+        "page": 3,
+        "clause": "Clause 5.3",
+        "quote": "Annual increase based on CPI"
+      },
+      "security_deposit": {
+        "page": 2,
+        "clause": "Clause 6.1",
+        "quote": "Security deposit: \u20ac7,500"
+      },
+      "permitted_use": {
+        "page": 2,
+        "clause": "Clause 7.1",
+        "quote": "Permitted use: Office space"
+      },
+      "assignment_rights": {
+        "page": 4,
+        "clause": "Clause 8.1",
+        "quote": "Assignment requires landlord consent"
+      },
+      "tenant_break_conditions": {
+        "page": 3,
+        "clause": "Clause 4.2",
+        "quote": "120 days notice after 1/3 of term"
+      },
+      "service_charge": {
+        "page": 2,
+        "clause": "Clause 9.1",
+        "quote": "Service charge: \u20ac300 per month"
+      },
+      "key_tenant_obligations": {
+        "page": 5,
+        "clause": "Clause 10.1",
+        "quote": "Maintain interior, Pay utilities"
+      },
+      "key_landlord_obligations": {
+        "page": 5,
+        "clause": "Clause 10.2",
+        "quote": "Structural repairs, Maintain common areas"
+      },
+      "nif_tenant": {
+        "page": 1,
+        "clause": "Clause 1.1",
+        "quote": "NIF: 123456789"
+      },
+      "nif_landlord": {
+        "page": 1,
+        "clause": "Clause 1.2",
+        "quote": "NIF: 987654321"
+      },
+      "financas_registration": {
+        "page": 6,
+        "clause": "Clause 11.1",
+        "quote": "Landlord must register with Finan\u00e7as"
+      },
+      "stamp_duty_clause": {
+        "page": 6,
+        "clause": "Clause 11.2",
+        "quote": "Landlord bears stamp duty"
+      },
+      "governing_law": {
+        "page": 7,
+        "clause": "Clause 12.1",
+        "quote": "Governing law: Portuguese law"
+      },
+      "deposit_months": {
+        "page": 2,
+        "clause": "Clause 6.1",
+        "quote": "Security deposit: \u20ac7,500"
+      },
+      "cpi_index": {
+        "page": 3,
+        "clause": "Clause 5.2",
+        "quote": "Rent review linked to CPI"
+      },
+      "automatic_renewal": {
+        "page": 3,
+        "clause": "Clause 4.3",
+        "quote": "Automatic renewal applies"
+      },
+      "notice_period_tenant_days": {
+        "page": 3,
+        "clause": "Clause 4.2",
+        "quote": "120 days notice"
+      },
+      "notice_period_landlord_days": {
+        "page": 3,
+        "clause": "Clause 4.4",
+        "quote": "240 days notice"
+      },
+      "early_termination_after_months": {
+        "page": 3,
+        "clause": "Clause 4.2",
+        "quote": "After 12 months"
+      }
+    },
+    "flagged_clauses": []
+  },
+  "validation": {
+    "parse_error": "Could not parse LLM output as JSON: Unterminated string starting at: line 150 column 17 (char 6421)",
+    "raw_output": "```json\n{\n  \"agreement_score\": 5,\n  \"confidence_score\": 0.02,\n  \"validation_passed\": false,\n  \"field_validations\": {\n    \"tenant_name\": {\n      \"status\": \"incorrect\",\n      \"comment\": \"Extracted: 'ABC Com\u00e9rcio Lda' | Actual: 'Porto Digital Solutions Lda.' | Complete mismatch\"\n    },\n    \"tenant_nif\": {\n      \"status\": \"incorrect\",\n      \"comment\": \"Extracted: '123456789' | Actual: '543321819' | Wrong NIF entirely\"\n    },\n    \"landlord_name\": {\n      \"status\": \"incorrect\",\n      \"comment\": \"Extracted: 'XYZ Investimentos SA' | Actual: 'Fundo de Investimento Imobili\u00e1rio Tejo SICAV-FIA' | Complete mismatch\"\n    },\n    \"landlord_nif\": {\n      \"status\": \"incorrect\",\n      \"comment\": \"Extracted: '987654321' | Actual: '560013389' | Wrong NIF entirely\"\n    },\n    \"property_address\": {\n      \"status\": \"incorrect\",\n      \"comment\": \"Extracted: 'Rua das Flores, 123, 4\u00ba Andar, Lisboa' | Actual: 'Avenida da Liberdade 288, 4000-833 Porto' | Completely wrong address\"\n    },\n    \"lease_commencement_date\": {\n      \"status\": \"incorrect\",\n      \"comment\": \"Extracted: '2023-01-01' | Actual: '2024-01-22' | Wrong year and date\"\n    },\n    \"lease_expiry_date\": {\n      \"status\": \"incorrect\",\n      \"comment\": \"Extracted: '2028-12-31' | Actual: '2034-01-22' | 6-year error in duration\"\n    },\n    \"lease_term_years\": {\n      \"status\": \"incorrect\",\n      \"comment\": \"Extracted implicitly 5 years | Actual: 10 years | Critical duration error\"\n    },\n    \"rent_amount\": {\n      \"status\": \"incorrect\",\n      \"comment\": \"Extracted: '\u20ac2,500' | Actual: '\u20ac19,900' | Off by factor of ~8x\"\n    },\n    \"rent_annual_total\": {\n      \"status\": \"not_found\",\n      \"comment\": \"Actual: \u20ac238,800 annually | Not extracted\"\n    },\n    \"security_deposit\": {\n      \"status\": \"incorrect\",\n      \"comment\": \"Extracted: '\u20ac7,500' | Actual: '\u20ac39,800' | Wrong deposit amount; actual is 2 months rent\"\n    },\n    \"deposit_months\": {\n      \"status\": \"incorrect\",\n      \"comment\": \"Extracted: 3 months | Actual: 2 months of rent (\u20ac39,800)\"\n    },\n    \"break_option_date\": {\n      \"status\": \"incorrect\",\n      \"comment\": \"Extracted: '2025-12-31' | Actual: '2029-01-22' | Wrong date; should be 5 years into 10-year term\"\n    },\n    \"break_conditions\": {\n      \"status\": \"incomplete\",\n      \"comment\": \"Extracted: '120 days notice after 1/3 of term' | Actual: (a) 120 days notice (b) no material breach (c) \u20ac59,700 indemnity (3 months rent) | Missing indemnification requirement\"\n    },\n    \"service_charge\": {\n      \"status\": \"incorrect\",\n      \"comment\": \"Extracted: '\u20ac300/month' | Actual: '\u20ac1,592/month' condominium charges | Off by 5x\"\n    },\n    \"permitted_use\": {\n      \"status\": \"incomplete\",\n      \"comment\": \"Extracted: 'Office space' | Actual: 'Exclusively office and administrative activities' | Missing exclusivity and use restrictions detail\"\n    },\n    \"assignment_rights\": {\n      \"status\": \"correct\",\n      \"comment\": \"Correctly noted requires landlord consent; correctly notes consent not to be unreasonably withheld\"\n    },\n    \"cpi_index\": {\n      \"status\": \"correct\",\n      \"comment\": \"Correctly identified annual CPI adjustment per INE\"\n    },\n    \"automatic_renewal\": {\n      \"status\": \"correct\",\n      \"comment\": \"Correctly identified automatic renewal in equal periods unless party objects\"\n    },\n    \"notice_period_tenant\": {\n      \"status\": \"correct\",\n      \"comment\": \"120 days correctly identified for tenant termination\"\n    },\n    \"notice_period_landlord\": {\n      \"status\": \"correct\",\n      \"comment\": \"240 days correctly identified for landlord non-renewal notice\"\n    },\n    \"governing_law\": {\n      \"status\": \"correct\",\n      \"comment\": \"Portuguese law and NRAU correctly identified\"\n    },\n    \"stamp_duty\": {\n      \"status\": \"correct\",\n      \"comment\": \"Correctly noted landlord bears stamp duty (10% of one month rent = \u20ac1,990)\"\n    },\n    \"financas_registration\": {\n      \"status\": \"correct\",\n      \"comment\": \"Correctly identified landlord must register with AT per NRAU\"\n    },\n    \"tenant_obligations_insurance\": {\n      \"status\": \"not_found\",\n      \"comment\": \"Actual: Civil liability insurance min \u20ac1,194,000 required | Not extracted\"\n    },\n    \"landlord_obligations\": {\n      \"status\": \"incomplete\",\n      \"comment\": \"Extracted basic items but missed structural maintenance obligations detail\"\n    },\n    \"works_alterations\": {\n      \"status\": \"not_found\",\n      \"comment\": \"Clause 13 regarding works authorization and reversions not captured\"\n    }\n  },\n  \"missed_flags\": [\n    \"CRITICAL: Break indemnification (\u20ac59,700 penalty for early termination) \u2014 High-risk penalty clause under Portuguese law requiring explicit consent analysis\",\n    \"CRITICAL: Automatic renewal with unequal notice periods (120 vs 240 days) \u2014 Creates asymmetric termination burden; potential enforceability issue under NRAU\",\n    \"HIGH: Mandatory civil liability insurance (\u20ac1,194,000) \u2014 Landlord may be imposing excessive insurance burden on tenant; should verify reasonableness\",\n    \"HIGH: Condominium charges updateable annually without CPI reference \u2014 Blank check for cost increases; differs from rent review mechanism\",\n    \"MEDIUM: Works reversion clause (Clause 13) \u2014 All tenant improvements revert to landlord; restrictive and should be flagged for tenant negotiation\",\n    \"MEDIUM: Property area of 2,150m\u00b2 not flagged \u2014 Very large commercial lease; high-value transaction with elevated risk profile\",\n    \"MEDIUM: Deposit return conditioned on deductions (Clause 6) \u2014 Standard but should confirm no unlawful deduction practices\"\n  ],\n  \"false_flags\": [],\n  \"critical_errors\": [\n    {\n      \"field\": \"tenant_name\",\n      \"extraction\": \"ABC Com\u00e9rcio Lda\",\n      \"actual\": \"Porto Digital Solutions Lda.\",\n      \"severity\": \"CRITICAL\",\n      \"impact\": \"Entire lease incorrectly identified; wrong party\"\n    },\n    {\n      \"field\": \"landlord_name\",\n      \"extraction\": \"XYZ Investimentos SA\",\n      \"actual\": \"Fundo de Investimento Imobili\u00e1rio Tejo SICAV-FIA\",\n      \"severity\": \"CRITICAL\",\n      \"impact\": \"Entire lease incorrectly identified; wrong landlord entity\"\n    },\n    {\n      \"field\": \"property_address\",\n      \"extraction\": \"Rua das Flores, 123, 4\u00ba Andar, Lisboa\",\n      \"actual\": \"Avenida da Liberdade 288, 4000-833 Porto\",\n      \"severity\": \"CRITICAL\",\n      \"impact\": \"Wrong property entirely; different city and address\"\n    },\n    {\n      \"field\": \"lease_duration\",\n      \"extraction\": \"5 years (2023-2028)\",\n      \"actual\": \"10 years",
+    "tokens_in": 3315,
+    "tokens_out": 2000,
+    "cost_eur": 0.0098,
+    "model": "claude-haiku-4-5-20251001"
+  }
+}

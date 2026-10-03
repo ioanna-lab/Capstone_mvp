@@ -1,0 +1,233 @@
+{
+  "result": {
+    "meta": {
+      "filename": "PT_0171_office_Guarda.pdf",
+      "model": "gpt-4o-2024-11-20",
+      "is_reasoning_model": false,
+      "disclaimer": "AI-generated draft. Must be reviewed by a qualified lawyer before use in any legal or financial decision.",
+      "reviewer_email": "ioannarenta@gmail.com"
+    },
+    "summary": {
+      "total_flagged_clauses": 1,
+      "high_risk_clauses": 1,
+      "medium_risk_clauses": 0,
+      "low_risk_clauses": 0,
+      "review_recommendation": "PRIORITY REVIEW REQUIRED \u2014 high risk clauses identified"
+    },
+    "extracted_fields": {
+      "tenant_name": "Nazar\u00e9 Tourism Lda.",
+      "landlord_name": "Alentejo Land Fund SICAV-FIA",
+      "property_address": "Rua Castilho 215, 6300-809 Guarda, Portugal",
+      "lease_commencement_date": "2022-07-15",
+      "lease_expiry_date": "2032-07-15",
+      "break_option_dates": [
+        {
+          "date": "2027-07-15",
+          "conditions": "Aviso pr\u00e9vio de 120 dias, aus\u00eancia de incumprimento material, pagamento de indemniza\u00e7\u00e3o equivalente a 4 meses de renda."
+        }
+      ],
+      "rent_amount": "EUR 8,300",
+      "rent_review_mechanism": "Actualiza\u00e7\u00e3o anual de acordo com o IPC publicado pelo INE.",
+      "rent_escalation_schedule": null,
+      "security_deposit": "EUR 24,900",
+      "permitted_use": "Uso exclusivo de escrit\u00f3rio e atividades administrativas.",
+      "assignment_rights": "Cess\u00e3o e subarrendamento absolutamente proibidos.",
+      "tenant_break_conditions": [
+        "Aviso pr\u00e9vio de 120 dias.",
+        "Aus\u00eancia de incumprimento material.",
+        "Pagamento de indemniza\u00e7\u00e3o equivalente a 4 meses de renda."
+      ],
+      "service_charge": "EUR 664 mensais, sujeitos a actualiza\u00e7\u00e3o anual.",
+      "key_tenant_obligations": [
+        "Pagar a renda na data acordada.",
+        "Conservar o Im\u00f3vel em bom estado.",
+        "Cumprir toda a legisla\u00e7\u00e3o aplic\u00e1vel.",
+        "Manter seguro de responsabilidade civil de valor n\u00e3o inferior a EUR 1,000,000."
+      ],
+      "key_landlord_obligations": [
+        "Manter a estrutura do edif\u00edcio em bom estado.",
+        "Assegurar o gozo pac\u00edfico do Im\u00f3vel.",
+        "Realizar obras estruturais necess\u00e1rias."
+      ]
+    },
+    "portugal_fields": {
+      "nif_tenant": "508697829",
+      "nif_landlord": "522169958",
+      "financas_registration": "O Senhorio obriga-se a comunicar o presente Contrato ao Portal das Finan\u00e7as at\u00e9 ao final do m\u00eas seguinte ao in\u00edcio do arrendamento.",
+      "stamp_duty_clause": "Responsabilidade do Senhorio.",
+      "governing_law": "Lei portuguesa, designadamente pelo NRAU e C\u00f3digo Civil Portugu\u00eas.",
+      "deposit_months": 3,
+      "cpi_index": "yes",
+      "automatic_renewal": "yes",
+      "notice_period_tenant_days": 120,
+      "notice_period_landlord_days": 240,
+      "early_termination_after_months": 60
+    },
+    "citations": {
+      "tenant_name": {
+        "page": 1,
+        "clause": "Preamble",
+        "quote": "ARRENDAT\u00c1RIO: Nazar\u00e9 Tourism Lda."
+      },
+      "landlord_name": {
+        "page": 1,
+        "clause": "Preamble",
+        "quote": "SENHORIO: Alentejo Land Fund SICAV-FIA"
+      },
+      "property_address": {
+        "page": 1,
+        "clause": "Clause 1",
+        "quote": "sito em Rua Castilho 215, 6300-809 Guarda, Portugal"
+      },
+      "lease_commencement_date": {
+        "page": 1,
+        "clause": "Clause 2",
+        "quote": "inicia-se em 2022-07-15"
+      },
+      "lease_expiry_date": {
+        "page": 1,
+        "clause": "Clause 2",
+        "quote": "termina em 2032-07-15"
+      },
+      "break_option_dates": {
+        "page": 1,
+        "clause": "Clause 3",
+        "quote": "O Arrendat\u00e1rio tem o direito de resolver o presente Contrato em 2027-07-15"
+      },
+      "rent_amount": {
+        "page": 1,
+        "clause": "Clause 4",
+        "quote": "A renda mensal \u00e9 de EUR 8,300"
+      },
+      "rent_review_mechanism": {
+        "page": 1,
+        "clause": "Clause 5",
+        "quote": "A renda ser\u00e1 actualizada anualmente de acordo com o \u00cdndice de Pre\u00e7os no Consumidor"
+      },
+      "rent_escalation_schedule": null,
+      "security_deposit": {
+        "page": 1,
+        "clause": "Clause 6",
+        "quote": "dep\u00f3sito de garantia de EUR 24,900"
+      },
+      "permitted_use": {
+        "page": 1,
+        "clause": "Clause 7",
+        "quote": "destina-se exclusivamente a uso exclusivo de escrit\u00f3rio"
+      },
+      "assignment_rights": {
+        "page": 1,
+        "clause": "Clause 8",
+        "quote": "A cess\u00e3o e subarrendamento s\u00e3o absolutamente proibidos"
+      },
+      "tenant_break_conditions": {
+        "page": 1,
+        "clause": "Clause 3",
+        "quote": "Aviso pr\u00e9vio de 120 dias, aus\u00eancia de incumprimento material, pagamento de indemniza\u00e7\u00e3o"
+      },
+      "service_charge": {
+        "page": 1,
+        "clause": "Clause 9",
+        "quote": "encargos de condom\u00ednio e demais despesas correntes do Im\u00f3vel, estimados em EUR 664"
+      },
+      "key_tenant_obligations": {
+        "page": 1,
+        "clause": "Clause 14",
+        "quote": "pagar a renda na data acordada; conservar o Im\u00f3vel em bom estado"
+      },
+      "key_landlord_obligations": {
+        "page": 1,
+        "clause": "Clause 15",
+        "quote": "manter a estrutura do edif\u00edcio em bom estado; assegurar o gozo pac\u00edfico do Im\u00f3vel"
+      },
+      "nif_tenant": {
+        "page": 1,
+        "clause": "Preamble",
+        "quote": "NIF 508697829"
+      },
+      "nif_landlord": {
+        "page": 1,
+        "clause": "Preamble",
+        "quote": "NIF 522169958"
+      },
+      "financas_registration": {
+        "page": 1,
+        "clause": "Clause 10",
+        "quote": "O Senhorio obriga-se a comunicar o presente Contrato ao Portal das Finan\u00e7as"
+      },
+      "stamp_duty_clause": {
+        "page": 1,
+        "clause": "Clause 11",
+        "quote": "Imposto do Selo [...] \u00e9 da responsabilidade do Senhorio"
+      },
+      "governing_law": {
+        "page": 1,
+        "clause": "Clause 16",
+        "quote": "regulado pela lei portuguesa, designadamente pelo NRAU"
+      },
+      "deposit_months": {
+        "page": 1,
+        "clause": "Clause 6",
+        "quote": "equivalente a 3 meses de renda"
+      },
+      "cpi_index": {
+        "page": 1,
+        "clause": "Clause 5",
+        "quote": "de acordo com o \u00cdndice de Pre\u00e7os no Consumidor (IPC)"
+      },
+      "automatic_renewal": {
+        "page": 1,
+        "clause": "Clause 2",
+        "quote": "renovando-se automaticamente por per\u00edodos iguais"
+      },
+      "notice_period_tenant_days": {
+        "page": 1,
+        "clause": "Clause 12",
+        "quote": "o Arrendat\u00e1rio deve notificar o Senhorio com anteced\u00eancia de 120 dias"
+      },
+      "notice_period_landlord_days": {
+        "page": 1,
+        "clause": "Clause 12",
+        "quote": "o Senhorio deve notificar o Arrendat\u00e1rio com anteced\u00eancia de 240 dias"
+      },
+      "early_termination_after_months": {
+        "page": 1,
+        "clause": "Clause 3",
+        "quote": "O Arrendat\u00e1rio tem o direito de resolver o presente Contrato em 2027-07-15"
+      }
+    },
+    "flagged_clauses": [
+      {
+        "clause_type": "Assignment restriction",
+        "risk_level": "high",
+        "page_number": 3,
+        "clause_reference": "Clause 8",
+        "quoted_text": "A cess\u00e3o e subarrendamento s\u00e3o absolutamente proibidos em quaisquer circunst\u00e2ncias, incluindo transmiss\u00e3o de estabelecimento comercial.",
+        "plain_language_explanation": "An absolute prohibition on assignment and subletting, including the transfer of a commercial establishment, may be invalid under Portuguese law. The landlord must allow assignment if the entire commercial establishment is transferred, provided they are notified within one month.",
+        "portuguese_law_reference": "C\u00f3digo Civil Art. 1112",
+        "recommended_action": "Amend the clause to allow assignment in cases of commercial establishment transfer, with proper notification to the landlord."
+      }
+    ]
+  },
+  "validation": {
+    "agreement_score": 92,
+    "confidence_score": 0.92,
+    "validation_passed": true,
+    "fields_checked": 15,
+    "fields_correct": 14,
+    "issues_found": [
+      "tenant_name"
+    ],
+    "missed_flags": [
+      "guarantor_obligation",
+      "automatic_renewal"
+    ],
+    "critical_errors": [],
+    "summary": "Extraction is substantially accurate with one party name discrepancy (guarantor vs tenant) and two operationally important clauses not flagged for business review.",
+    "tokens_in": 1734,
+    "tokens_out": 139,
+    "cost_eur": 0.001788,
+    "model": "claude-haiku-4-5-20251001",
+    "raw_response": "```json\n{\n  \"agreement_score\": 92,\n  \"confidence_score\": 0.92,\n  \"validation_passed\": true,\n  \"fields_checked\": 15,\n  \"fields_correct\": 14,\n  \"issues_found\": [\"tenant_name\"],\n  \"missed_flags\": [\"guarantor_obligation\", \"automatic_renewal\"],\n  \"critical_errors\": [],\n  \"summary\": \"Extraction is substan"
+  }
+}

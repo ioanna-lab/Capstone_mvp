@@ -1,0 +1,119 @@
+{
+  "result": {
+    "meta": {
+      "filename": "PT_0001_office_Porto.pdf",
+      "model": "gpt-4o-2024-11-20",
+      "is_reasoning_model": false,
+      "disclaimer": "AI-generated draft. Must be reviewed by a qualified lawyer before use in any legal or financial decision.",
+      "reviewer_email": "ioannarenta@gmail.com"
+    },
+    "summary": {
+      "total_flagged_clauses": 2,
+      "high_risk_clauses": 0,
+      "medium_risk_clauses": 2,
+      "low_risk_clauses": 0,
+      "review_recommendation": "REVIEW RECOMMENDED \u2014 medium risk clauses identified"
+    },
+    "extracted_fields": {
+      "tenant_name": null,
+      "landlord_name": null,
+      "property_address": null,
+      "lease_commencement_date": null,
+      "lease_expiry_date": null,
+      "break_option_dates": null,
+      "rent_amount": null,
+      "rent_review_mechanism": null,
+      "rent_escalation_schedule": null,
+      "security_deposit": null,
+      "permitted_use": null,
+      "assignment_rights": null,
+      "tenant_break_conditions": null,
+      "service_charge": null,
+      "key_tenant_obligations": null,
+      "key_landlord_obligations": null
+    },
+    "portugal_fields": {
+      "nif_tenant": null,
+      "nif_landlord": null,
+      "financas_registration": null,
+      "stamp_duty_clause": null,
+      "governing_law": null,
+      "deposit_months": null,
+      "cpi_index": null,
+      "automatic_renewal": null,
+      "notice_period_tenant_days": null,
+      "notice_period_landlord_days": null,
+      "early_termination_after_months": null
+    },
+    "citations": {
+      "tenant_name": null,
+      "landlord_name": null,
+      "property_address": null,
+      "lease_commencement_date": null,
+      "lease_expiry_date": null,
+      "break_option_dates": null,
+      "rent_amount": null,
+      "rent_review_mechanism": null,
+      "rent_escalation_schedule": null,
+      "security_deposit": null,
+      "permitted_use": null,
+      "assignment_rights": null,
+      "tenant_break_conditions": null,
+      "service_charge": null,
+      "key_tenant_obligations": null,
+      "key_landlord_obligations": null,
+      "nif_tenant": null,
+      "nif_landlord": null,
+      "financas_registration": null,
+      "stamp_duty_clause": null,
+      "governing_law": null,
+      "deposit_months": null,
+      "cpi_index": null,
+      "automatic_renewal": null,
+      "notice_period_tenant_days": null,
+      "notice_period_landlord_days": null,
+      "early_termination_after_months": null
+    },
+    "flagged_clauses": [
+      {
+        "clause_type": "Break condition",
+        "risk_level": "medium",
+        "page_number": 1,
+        "clause_reference": "Clause 3",
+        "quoted_text": "pagamento de uma indemniza\u00e7\u00e3o equivalente a 3 meses de renda no valor de EUR 59,700.",
+        "plain_language_explanation": "The tenant's right to early termination is conditional on paying a penalty of 3 months' rent. While not illegal, this is an unusually high penalty and could be negotiated.",
+        "portuguese_law_reference": "C\u00f3digo Civil Art. 1083",
+        "recommended_action": "Consider negotiating a lower penalty or clarifying the justification for this amount."
+      },
+      {
+        "clause_type": "Assignment restriction",
+        "risk_level": "medium",
+        "page_number": 2,
+        "clause_reference": "Clause 8",
+        "quoted_text": "O Arrendat\u00e1rio n\u00e3o pode ceder, subarrendar ou transmitir os seus direitos ao abrigo do presente Contrato sem consentimento pr\u00e9vio e escrito do Senhorio.",
+        "plain_language_explanation": "Absolute prohibition on assignment or subletting may be invalid under Portuguese law if the tenant transfers the entire commercial establishment. Landlord consent cannot be unreasonably withheld.",
+        "portuguese_law_reference": "C\u00f3digo Civil Art. 1112",
+        "recommended_action": "Clarify that landlord consent will not be unreasonably withheld and ensure compliance with the tenant's right to transfer a commercial establishment."
+      }
+    ]
+  },
+  "validation": {
+    "agreement_score": 0,
+    "confidence_score": 0.0,
+    "validation_passed": false,
+    "fields_checked": 0,
+    "fields_correct": 0,
+    "issues_found": [
+      "no_extracted_fields_provided"
+    ],
+    "missed_flags": [],
+    "critical_errors": [
+      "EXTRACTED_FIELDS_section_is_empty"
+    ],
+    "summary": "Cannot validate lease data - no extracted fields were provided for comparison against the lease text.",
+    "tokens_in": 1595,
+    "tokens_out": 129,
+    "cost_eur": 0.001649,
+    "model": "claude-haiku-4-5-20251001"
+  }
+}

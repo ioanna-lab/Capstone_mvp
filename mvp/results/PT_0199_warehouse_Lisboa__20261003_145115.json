@@ -1,0 +1,255 @@
+{
+  "result": {
+    "meta": {
+      "filename": "PT_0199_warehouse_Lisboa.pdf",
+      "model": "gpt-4o-2024-11-20",
+      "is_reasoning_model": false,
+      "disclaimer": "AI-generated draft. Must be reviewed by a qualified lawyer before use in any legal or financial decision.",
+      "reviewer_email": "ioannarenta@gmail.com"
+    },
+    "summary": {
+      "total_flagged_clauses": 3,
+      "high_risk_clauses": 2,
+      "medium_risk_clauses": 1,
+      "low_risk_clauses": 0,
+      "review_recommendation": "PRIORITY REVIEW REQUIRED \u2014 high risk clauses identified"
+    },
+    "extracted_fields": {
+      "tenant_name": "\u00c9vora Agricultural Tech Lda.",
+      "landlord_name": "Montado Capital Fund SICAV",
+      "property_address": "Rua de S\u00e3o Bento 49, 1200-999 Lisboa, Portugal",
+      "lease_commencement_date": "2021-04-21",
+      "lease_expiry_date": "2024-04-21",
+      "break_option_dates": [
+        {
+          "date": "2022-04-21",
+          "conditions": "Aviso pr\u00e9vio escrito com anteced\u00eancia m\u00ednima de 120 dias; aus\u00eancia de incumprimento material; pagamento de indemniza\u00e7\u00e3o equivalente a 4 meses de renda."
+        }
+      ],
+      "rent_amount": "EUR 15,500",
+      "rent_review_mechanism": "Actualiza\u00e7\u00e3o anual de acordo com o \u00cdndice de Pre\u00e7os no Consumidor (IPC) publicado pelo INE.",
+      "rent_escalation_schedule": null,
+      "security_deposit": "EUR 46,500",
+      "permitted_use": "Armazenagem, log\u00edstica e opera\u00e7\u00f5es industriais.",
+      "assignment_rights": "N\u00e3o permitido sem consentimento pr\u00e9vio e escrito do Senhorio.",
+      "tenant_break_conditions": [
+        "Aviso pr\u00e9vio escrito com anteced\u00eancia m\u00ednima de 120 dias.",
+        "Aus\u00eancia de incumprimento material.",
+        "Pagamento de indemniza\u00e7\u00e3o equivalente a 4 meses de renda."
+      ],
+      "service_charge": "EUR 1,240 mensais, sujeitos a actualiza\u00e7\u00e3o anual.",
+      "key_tenant_obligations": [
+        "Pagar a renda na data acordada.",
+        "Conservar o Im\u00f3vel em bom estado.",
+        "Cumprir toda a legisla\u00e7\u00e3o aplic\u00e1vel.",
+        "Manter seguro de responsabilidade civil de valor n\u00e3o inferior a EUR 1,000,000."
+      ],
+      "key_landlord_obligations": [
+        "Manter a estrutura do edif\u00edcio em bom estado.",
+        "Assegurar o gozo pac\u00edfico do Im\u00f3vel.",
+        "Realizar obras estruturais necess\u00e1rias."
+      ]
+    },
+    "portugal_fields": {
+      "nif_tenant": "575987622",
+      "nif_landlord": "502341326",
+      "financas_registration": "O Senhorio obriga-se a comunicar o presente Contrato ao Portal das Finan\u00e7as at\u00e9 ao final do m\u00eas seguinte ao in\u00edcio do arrendamento.",
+      "stamp_duty_clause": "O Imposto do Selo \u00e9 da exclusiva responsabilidade do Arrendat\u00e1rio.",
+      "governing_law": "Lei portuguesa, designadamente pelo NRAU e pelo C\u00f3digo Civil Portugu\u00eas.",
+      "deposit_months": 3,
+      "cpi_index": "yes",
+      "automatic_renewal": "yes",
+      "notice_period_tenant_days": 30,
+      "notice_period_landlord_days": 60,
+      "early_termination_after_months": 12
+    },
+    "citations": {
+      "tenant_name": {
+        "page": 1,
+        "clause": "Introduction",
+        "quote": "ARRENDAT\u00c1RIO: \u00c9vora Agricultural Tech Lda."
+      },
+      "landlord_name": {
+        "page": 1,
+        "clause": "Introduction",
+        "quote": "SENHORIO: Montado Capital Fund SICAV"
+      },
+      "property_address": {
+        "page": 1,
+        "clause": "Clause 1",
+        "quote": "unidade log\u00edstica sito em Rua de S\u00e3o Bento 49, 1200-999 Lisboa, Portugal"
+      },
+      "lease_commencement_date": {
+        "page": 1,
+        "clause": "Clause 2",
+        "quote": "O prazo do arrendamento inicia-se em 2021-04-21"
+      },
+      "lease_expiry_date": {
+        "page": 1,
+        "clause": "Clause 2",
+        "quote": "e termina em 2024-04-21"
+      },
+      "break_option_dates": {
+        "page": 1,
+        "clause": "Clause 3",
+        "quote": "O Arrendat\u00e1rio tem o direito de resolver o presente Contrato em 2022-04-21"
+      },
+      "rent_amount": {
+        "page": 1,
+        "clause": "Clause 4",
+        "quote": "A renda mensal \u00e9 de EUR 15,500"
+      },
+      "rent_review_mechanism": {
+        "page": 1,
+        "clause": "Clause 5",
+        "quote": "A renda ser\u00e1 actualizada anualmente de acordo com o \u00cdndice de Pre\u00e7os no Consumidor (IPC)"
+      },
+      "rent_escalation_schedule": null,
+      "security_deposit": {
+        "page": 1,
+        "clause": "Clause 6",
+        "quote": "dep\u00f3sito de garantia de EUR 46,500"
+      },
+      "permitted_use": {
+        "page": 1,
+        "clause": "Clause 7",
+        "quote": "O Im\u00f3vel destina-se exclusivamente a armazenagem, log\u00edstica e opera\u00e7\u00f5es industriais."
+      },
+      "assignment_rights": {
+        "page": 1,
+        "clause": "Clause 8",
+        "quote": "n\u00e3o pode ceder, subarrendar ou transmitir os seus direitos [...] sem consentimento pr\u00e9vio"
+      },
+      "tenant_break_conditions": {
+        "page": 1,
+        "clause": "Clause 3",
+        "quote": "Aviso pr\u00e9vio escrito com anteced\u00eancia m\u00ednima de 120 dias; aus\u00eancia de incumprimento material; pagamento de indemniza\u00e7\u00e3o"
+      },
+      "service_charge": {
+        "page": 1,
+        "clause": "Clause 9",
+        "quote": "encargos de condom\u00ednio [...] estimados em EUR 1,240 mensais"
+      },
+      "key_tenant_obligations": {
+        "page": 1,
+        "clause": "Clause 14",
+        "quote": "pagar a renda na data acordada; conservar o Im\u00f3vel em bom estado; cumprir toda a legisla\u00e7\u00e3o aplic\u00e1vel"
+      },
+      "key_landlord_obligations": {
+        "page": 1,
+        "clause": "Clause 15",
+        "quote": "manter a estrutura do edif\u00edcio em bom estado; assegurar o gozo pac\u00edfico do Im\u00f3vel"
+      },
+      "nif_tenant": {
+        "page": 1,
+        "clause": "Introduction",
+        "quote": "com o n\u00famero de identifica\u00e7\u00e3o fiscal (NIF) 575987622"
+      },
+      "nif_landlord": {
+        "page": 1,
+        "clause": "Introduction",
+        "quote": "com o n\u00famero de identifica\u00e7\u00e3o fiscal (NIF) 502341326"
+      },
+      "financas_registration": {
+        "page": 1,
+        "clause": "Clause 10",
+        "quote": "O Senhorio obriga-se a comunicar o presente Contrato ao Portal das Finan\u00e7as"
+      },
+      "stamp_duty_clause": {
+        "page": 1,
+        "clause": "Clause 11",
+        "quote": "O Imposto do Selo [...] \u00e9 da exclusiva responsabilidade do Arrendat\u00e1rio"
+      },
+      "governing_law": {
+        "page": 1,
+        "clause": "Clause 16",
+        "quote": "O presente Contrato \u00e9 regulado pela lei portuguesa"
+      },
+      "deposit_months": {
+        "page": 1,
+        "clause": "Clause 6",
+        "quote": "equivalente a 3 meses de renda"
+      },
+      "cpi_index": {
+        "page": 1,
+        "clause": "Clause 5",
+        "quote": "de acordo com o \u00cdndice de Pre\u00e7os no Consumidor (IPC)"
+      },
+      "automatic_renewal": {
+        "page": 1,
+        "clause": "Clause 2",
+        "quote": "renovando-se automaticamente por per\u00edodos iguais"
+      },
+      "notice_period_tenant_days": {
+        "page": 1,
+        "clause": "Clause 12",
+        "quote": "o Arrendat\u00e1rio deve notificar o Senhorio com anteced\u00eancia de 30 (trinta) dias"
+      },
+      "notice_period_landlord_days": {
+        "page": 1,
+        "clause": "Clause 12",
+        "quote": "o Senhorio deve notificar o Arrendat\u00e1rio com anteced\u00eancia de 60 dias"
+      },
+      "early_termination_after_months": {
+        "page": 1,
+        "clause": "Clause 3",
+        "quote": "O Arrendat\u00e1rio tem o direito de resolver o presente Contrato em 2022-04-21"
+      }
+    },
+    "flagged_clauses": [
+      {
+        "clause_type": "Stamp duty",
+        "risk_level": "high",
+        "page_number": 3,
+        "clause_reference": "Clause 11",
+        "quoted_text": "O Imposto do Selo, no valor de EUR 1,550, \u00e9 da exclusiva responsabilidade do Arrendat\u00e1rio, que se obriga a efectuar o respectivo pagamento \u00e0 Autoridade Tribut\u00e1ria no prazo legalmente previsto.",
+        "plain_language_explanation": "Under Portuguese law, the landlord is responsible for paying the stamp duty. This clause incorrectly shifts the obligation to the tenant, which is non-compliant.",
+        "portuguese_law_reference": "C\u00f3digo do Imposto do Selo Art. 2",
+        "recommended_action": "Amend the clause to clarify that the landlord will bear the stamp duty cost."
+      },
+      {
+        "clause_type": "Notice period",
+        "risk_level": "high",
+        "page_number": 3,
+        "clause_reference": "Clause 12",
+        "quoted_text": "Para efeitos de resolu\u00e7\u00e3o ou oposi\u00e7\u00e3o \u00e0 renova\u00e7\u00e3o: (a) o Arrendat\u00e1rio deve notificar o Senhorio com anteced\u00eancia de 30 (trinta) dias; (b) o Senhorio deve notificar o Arrendat\u00e1rio com anteced\u00eancia de 60 dias.",
+        "plain_language_explanation": "The notice period for tenant termination is below the statutory minimum of 120 days for leases of 1 year or longer. This clause is unenforceable under Portuguese law.",
+        "portuguese_law_reference": "NRAU Art. 1098",
+        "recommended_action": "Revise the notice period to comply with the statutory minimum of 120 days for tenant termination."
+      },
+      {
+        "clause_type": "Early termination indemnity",
+        "risk_level": "medium",
+        "page_number": 2,
+        "clause_reference": "Clause 3",
+        "quoted_text": "pagamento de uma indemniza\u00e7\u00e3o equivalente a 4 meses de renda no valor de EUR 46,500.",
+        "plain_language_explanation": "The indemnity for early termination is unusually high at 4 months' rent. While not illegal, it may be considered excessive and could be challenged.",
+        "portuguese_law_reference": "C\u00f3digo Civil Art. 1083",
+        "recommended_action": "Consider negotiating a lower indemnity amount to align with market standards."
+      }
+    ]
+  },
+  "validation": {
+    "agreement_score": 85,
+    "confidence_score": 0.87,
+    "validation_passed": true,
+    "fields_checked": 15,
+    "fields_correct": 14,
+    "issues_found": [
+      "early_termination_indemnity_amount"
+    ],
+    "missed_flags": [
+      "automatic_renewal_clause",
+      "security_deposit_calculation_clarity"
+    ],
+    "critical_errors": [
+      "The early termination indemnity is stated as EUR 46,500 (4 months of rent), but 4 \u00d7 EUR 15,500 = EUR 62,000, not EUR 46,500. The EUR 46,500 figure is actually the security deposit amount, suggesting a copy-paste error in the extraction."
+    ],
+    "summary": "Extraction is substantially accurate with correct party names, dates, property address, and primary rent terms, but contains a material error conflating the security deposit with the early termination indemnity amount.",
+    "tokens_in": 1836,
+    "tokens_out": 232,
+    "cost_eur": 0.002205,
+    "model": "claude-haiku-4-5-20251001",
+    "raw_response": "```json\n{\n  \"agreement_score\": 85,\n  \"confidence_score\": 0.87,\n  \"validation_passed\": true,\n  \"fields_checked\": 15,\n  \"fields_correct\": 14,\n  \"issues_found\": [\"early_termination_indemnity_amount\"],\n  \"missed_flags\": [\"automatic_renewal_clause\", \"security_deposit_calculation_clarity\"],\n  \"critical_er"
+  }
+}

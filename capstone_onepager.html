@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Lease Review Assistant — Executive One-Pager</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap');
+
+  :root {
+    --navy:  #0f1f3d;
+    --ink:   #1a2540;
+    --slate: #3d4f6e;
+    --fog:   #8a9ab8;
+    --smoke: #e8ecf4;
+    --white: #ffffff;
+    --gold:  #c8a84b;
+    --red:   #c0392b;
+    --green: #1a6b3c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .print-btn { display: none; }
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #d4d8e0;
+    display: flex; flex-direction: column;
+    align-items: center; padding: 32px 16px 48px;
+    min-height: 100vh;
+  }
+
+  .print-btn {
+    margin-bottom: 20px;
+    background: var(--navy); color: var(--white);
+    border: none; border-radius: 6px;
+    padding: 10px 24px; font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.03em;
+  }
+  .print-btn:hover { background: #1a3060; }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    background: var(--white);
+    box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── header ── */
+  .header {
+    background: var(--navy);
+    padding: 22px 28px 20px;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 16px;
+  }
+  .header-left { flex: 1; }
+  .header-eyebrow {
+    font-size: 8px; font-weight: 600; letter-spacing: 0.16em;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 6px;
+  }
+  .header-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; color: var(--white); line-height: 1.15;
+    margin-bottom: 4px;
+  }
+  .header-title em { color: var(--gold); font-style: italic; }
+  .header-sub { font-size: 10px; color: #8a9ab8; }
+  .header-right {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+    flex-shrink: 0;
+  }
+  .tag {
+    font-size: 8.5px; font-weight: 500; letter-spacing: 0.06em;
+    padding: 3px 8px; border-radius: 3px;
+    background: rgba(255,255,255,0.1); color: var(--smoke);
+    text-transform: uppercase;
+  }
+
+  /* ── body ── */
+  .body { flex: 1; padding: 18px 28px 16px; display: flex; flex-direction: column; gap: 14px; }
+
+  /* ── section label ── */
+  .section-label {
+    font-size: 7.5px; font-weight: 600; letter-spacing: 0.18em;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 5px;
+  }
+
+  /* ── company strip ── */
+  .company-strip {
+    background: var(--smoke);
+    border-radius: 6px; padding: 12px 16px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0;
+  }
+  .company-item { display: flex; flex-direction: column; gap: 2px; }
+  .company-item + .company-item { border-left: 1px solid #d0d8ea; padding-left: 14px; margin-left: 4px; }
+  .ci-label { font-size: 7.5px; font-weight: 600; letter-spacing: 0.1em; color: var(--fog); text-transform: uppercase; }
+  .ci-value { font-size: 10.5px; font-weight: 500; color: var(--ink); line-height: 1.3; }
+
+  /* ── two col ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  /* ── card ── */
+  .card {
+    background: var(--smoke); border-radius: 5px;
+    padding: 11px 13px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .card-title { font-size: 10px; font-weight: 600; color: var(--ink); }
+  .card-body { font-size: 9.5px; color: var(--slate); line-height: 1.55; }
+
+  /* ── stat cards ── */
+  .stat-card {
+    background: var(--smoke); border-radius: 5px;
+    padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;
+  }
+  .stat-num { font-family: 'DM Serif Display', serif; font-size: 24px; line-height: 1; }
+  .stat-num.red { color: var(--red); }
+  .stat-num.green { color: var(--green); }
+  .stat-num.gold { color: var(--gold); }
+  .stat-label { font-size: 8.5px; color: var(--slate); line-height: 1.4; }
+
+  /* ── block ── */
+  .block { display: flex; flex-direction: column; gap: 5px; }
+  .block-title { font-size: 10.5px; font-weight: 600; color: var(--ink); }
+  .block-body { font-size: 9.5px; color: var(--slate); line-height: 1.55; }
+
+  /* ── bullet ── */
+  .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 4px; margin-top: 3px; }
+  .bullet-list li { font-size: 9.5px; color: var(--slate); padding-left: 12px; position: relative; line-height: 1.45; }
+  .bullet-list li::before { content: '—'; position: absolute; left: 0; color: var(--gold); font-weight: 600; }
+  .bullet-list li strong { color: var(--ink); font-weight: 500; }
+
+  /* ── workflow ── */
+  .flow { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .fn {
+    background: var(--smoke); border: 1px solid #d0d8ea;
+    border-radius: 4px; padding: 5px 8px;
+    font-size: 8.5px; font-weight: 500; color: var(--ink);
+    text-align: center; line-height: 1.3;
+  }
+  .fn.ai { background: var(--navy); color: var(--white); border-color: var(--navy); }
+  .fa { font-size: 10px; color: var(--fog); }
+
+  /* ── cost table ── */
+  .cost-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .cost-table th { font-size: 8px; font-weight: 600; color: var(--fog); text-transform: uppercase; letter-spacing: 0.08em; padding: 0 8px 5px 0; border-bottom: 1px solid var(--smoke); text-align: left; }
+  .cost-table td { font-size: 9.5px; color: var(--slate); padding: 5px 8px 5px 0; border-bottom: 1px solid var(--smoke); vertical-align: top; line-height: 1.4; }
+  .cost-table td:first-child { color: var(--ink); font-weight: 500; }
+  .cost-table tr.total td { font-weight: 600; color: var(--navy); border-top: 1.5px solid var(--navy); border-bottom: none; padding-top: 7px; }
+
+  /* ── phase row ── */
+  .phase-row { display: flex; gap: 8px; margin-top: 4px; }
+  .phase { flex: 1; border-radius: 4px; padding: 8px 10px; }
+  .phase.p1 { background: #e8f0fd; }
+  .phase.p2 { background: #e8f5ee; }
+  .phase.p3 { background: #fef3e0; }
+  .phase-label { font-size: 7px; font-weight: 600; color: var(--fog); text-transform: uppercase; letter-spacing: 0.1em; }
+  .phase-name { font-size: 10px; font-weight: 600; color: var(--ink); margin: 1px 0; }
+  .phase-detail { font-size: 8.5px; color: var(--slate); line-height: 1.4; }
+
+  /* ── risk chips ── */
+  .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; }
+  .risk-chip { background: var(--smoke); border-radius: 4px; padding: 7px 9px; border-left: 3px solid var(--gold); }
+  .risk-chip.high { border-left-color: var(--red); }
+  .risk-chip.med  { border-left-color: #b45309; }
+  .risk-chip.low  { border-left-color: var(--green); }
+  .risk-title { font-size: 9px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+  .risk-body  { font-size: 8.5px; color: var(--slate); line-height: 1.4; }
+
+  /* ── ask box ── */
+  .ask-box {
+    background: var(--navy); border-radius: 6px;
+    padding: 13px 16px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+  }
+  .ask-item { display: flex; flex-direction: column; gap: 2px; }
+  .ask-label { font-size: 7.5px; font-weight: 600; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; }
+  .ask-value { font-size: 10px; color: var(--smoke); line-height: 1.4; }
+  .ask-divider { border-right: 1px solid rgba(255,255,255,0.12); }
+
+  /* ── footer ── */
+  .footer {
+    background: var(--smoke); padding: 9px 28px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-left { font-size: 8px; color: var(--fog); }
+  .footer-right { font-size: 8px; color: var(--fog); }
+
+  /* divider */
+  hr { border: none; border-top: 1px solid var(--smoke); margin: 2px 0; }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <div class="header-eyebrow">AI Consulting · Capstone Round 1 · Ironhack</div>
+      <div class="header-title">AI-Assisted Lease &amp; <em>Due Diligence Review</em></div>
+      <div class="header-sub">Executive summary for Chleo — mid-market commercial property developer</div>
+    </div>
+    <div class="header-right">
+      <span class="tag">Commercial Real Estate</span>
+      <span class="tag">Mid-market · 200–1,000 staff</span>
+      <span class="tag">Ioanna Renta</span>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- COMPANY -->
+    <div>
+      <div class="section-label">Chleo's company</div>
+      <div class="company-strip">
+        <div class="company-item">
+          <span class="ci-label">Sector</span>
+          <span class="ci-value">Commercial property<br>development &amp; acquisition</span>
+        </div>
+        <div class="company-item">
+          <span class="ci-label">Deal volume</span>
+          <span class="ci-value">8–12 acquisitions<br>per year</span>
+        </div>
+        <div class="company-item">
+          <span class="ci-label">Legal team</span>
+          <span class="ci-value">4 in-house lawyers<br>+ external counsel</span>
+        </div>
+        <div class="company-item">
+          <span class="ci-label">Geography</span>
+          <span class="ci-value">Southern Europe<br>primary market</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROBLEM -->
+    <div>
+      <div class="section-label">The problem</div>
+      <div class="three-col" style="margin-bottom:8px">
+        <div class="stat-card">
+          <span class="stat-num red">4–8h</span>
+          <span class="stat-label">to abstract a single commercial lease manually</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num red">13 days</span>
+          <span class="stat-label">total due diligence cycle per acquisition</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num red">€192k</span>
+          <span class="stat-label">annual abstraction cost at 12 deals/year</span>
+        </div>
+      </div>
+      <p class="block-body">Before each acquisition closes, the legal team manually reads and abstracts 10–30 commercial leases — extracting key dates, rent schedules, break options, and unusual clauses. Two past deals had clause errors with material financial consequences. Chleo's concern: <strong style="color:var(--ink)">"How do I know the AI isn't making things up?"</strong> That fear is shared by 44% of real estate investment committees. It is the right question, and the solution is built around it.</p>
+    </div>
+
+    <!-- SOLUTION -->
+    <div>
+      <div class="section-label">The solution</div>
+      <div class="two-col">
+        <div>
+          <div class="block-body" style="margin-bottom:6px">An AI-assisted lease review assistant that extracts structured data from lease PDFs and flags non-standard clauses — with every field traced to its source passage. The lawyer reviews and approves the output. The AI does the reading; the lawyer does the thinking.</div>
+          <div class="flow">
+            <div class="fn">Lease PDF</div><div class="fa">→</div>
+            <div class="fn ai">LLM extraction<br>16 fields</div><div class="fa">→</div>
+            <div class="fn ai">LLM flagging<br>unusual clauses</div><div class="fa">→</div>
+            <div class="fn">Lawyer reviews<br>&amp; approves</div>
+          </div>
+        </div>
+        <div>
+          <div class="three-col" style="grid-template-columns:1fr 1fr; gap:7px">
+            <div class="stat-card">
+              <span class="stat-num green" style="font-size:20px">17 min</span>
+              <span class="stat-label">AI-assisted review time per lease</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-num green" style="font-size:20px">4.5d</span>
+              <span class="stat-label">due diligence cycle after AI (from 13 days)</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-num green" style="font-size:20px">95%</span>
+              <span class="stat-label">extraction accuracy on standard clauses</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-num green" style="font-size:20px">5/5</span>
+              <span class="stat-label">POC eval cases passed on all criteria</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- COST & TIMELINE -->
+    <div class="two-col">
+      <div>
+        <div class="section-label">Cost estimate</div>
+        <table class="cost-table">
+          <thead>
+            <tr><th>Item</th><th>Low</th><th>High</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Solution design &amp; architecture</td><td>€5,000</td><td>€10,000</td></tr>
+            <tr><td>LLM integration &amp; prompt engineering</td><td>€8,000</td><td>€15,000</td></tr>
+            <tr><td>UI development (Streamlit)</td><td>€5,000</td><td>€10,000</td></tr>
+            <tr><td>Evaluation, testing &amp; onboarding</td><td>€6,000</td><td>€12,000</td></tr>
+            <tr class="total"><td>Total build cost</td><td>€24,000</td><td>€47,000</td></tr>
+          </tbody>
+        </table>
+        <table class="cost-table" style="margin-top:8px">
+          <tbody>
+            <tr><td>Annual run cost (API + infra + maintenance)</td><td colspan="2">€9,400–€18,800/yr</td></tr>
+            <tr><td>Annual saving (manual abstraction)</td><td colspan="2">€128,000–€192,000/yr</td></tr>
+            <tr class="total"><td>Payback period</td><td colspan="2">3–7 months</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="section-label">Timeline</div>
+        <div class="phase-row">
+          <div class="phase p1">
+            <div class="phase-label">Phase 1</div>
+            <div class="phase-name">POC</div>
+            <div class="phase-detail">3–4 weeks · €8k–€15k<br>Build &amp; test core extraction workflow</div>
+          </div>
+          <div class="phase p2">
+            <div class="phase-label">Phase 2</div>
+            <div class="phase-name">Pilot</div>
+            <div class="phase-detail">8–10 weeks · €20k–€30k<br>Run on one real acquisition deal</div>
+          </div>
+          <div class="phase p3">
+            <div class="phase-label">Phase 3</div>
+            <div class="phase-name">Full deployment</div>
+            <div class="phase-detail">8–12 weeks · €15k–€25k<br>All deals + portfolio tracker</div>
+          </div>
+        </div>
+        <p class="block-body" style="margin-top:8px">Total: ~6 months from kick-off to full deployment. Pilot success criteria are defined before commitment — accuracy ≥ 90%, review time ≤ 45 min/lease, zero unchecked outputs entering a financial model.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- RISKS & COMPLIANCE -->
+    <div class="two-col">
+      <div>
+        <div class="section-label">Key risks &amp; mitigations</div>
+        <div class="risk-grid">
+          <div class="risk-chip high">
+            <div class="risk-title">AI hallucination</div>
+            <div class="risk-body">Every field cites source text. Human review mandatory before any output is used.</div>
+          </div>
+          <div class="risk-chip med">
+            <div class="risk-title">Lawyer adoption</div>
+            <div class="risk-body">Co-design output format with legal team. Pilot on a completed deal with known ground truth.</div>
+          </div>
+          <div class="risk-chip med">
+            <div class="risk-title">Document variability</div>
+            <div class="risk-body">Start pilot on digitally-authored leases. Extend to scanned documents in Phase 2.</div>
+          </div>
+          <div class="risk-chip low">
+            <div class="risk-title">EU AI Act / GDPR</div>
+            <div class="risk-body">Limited risk classification. Drafting aid, not decision system. Legitimate interest basis for GDPR.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Sustainability note</div>
+        <div class="three-col" style="grid-template-columns:1fr 1fr 1fr; gap:7px; margin-bottom:6px">
+          <div class="stat-card">
+            <span class="stat-num green" style="font-size:18px">−65%</span>
+            <span class="stat-label">deal cycle length reduction</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num green" style="font-size:18px">−80%</span>
+            <span class="stat-label">paper document handling</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num green" style="font-size:18px">−50%</span>
+            <span class="stat-label">external counsel hours</span>
+          </div>
+        </div>
+        <p class="block-body">Faster due diligence reduces Scope 3 emissions from business travel, document courier services, and external counsel office time — supporting Chleo's ESG reporting obligations under EU requirements.</p>
+      </div>
+    </div>
+
+    <!-- ASK BOX -->
+    <div class="ask-box">
+      <div class="ask-item ask-divider">
+        <span class="ask-label">The ask</span>
+        <span class="ask-value">10-week pilot on one upcoming acquisition. AI runs alongside the existing process. Go/no-go decision before any wider commitment.</span>
+      </div>
+      <div class="ask-item ask-divider">
+        <span class="ask-label">Pilot cost &amp; saving</span>
+        <span class="ask-value">€20k–€30k pilot cost vs €128k–€192k annual saving at current deal volume.</span>
+      </div>
+      <div class="ask-item">
+        <span class="ask-label">Payback</span>
+        <span class="ask-value">Within the first deal cycle. Every deal after that is net saving.</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span class="footer-left">AI Lease &amp; Due Diligence Review Assistant · Capstone Round 1 · Ironhack AI Consulting · Ioanna Renta</span>
+    <span class="footer-right">Data sources: JLL 2025 · Kolena 2025 · Oxmaint 2026 · Commercial Observer 2026 · RSM 2025</span>
+  </div>
+
+</div>
+
+</body>
+</html>

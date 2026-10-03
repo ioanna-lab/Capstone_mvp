@@ -1,0 +1,175 @@
+{
+  "name": "Lease Review Assistant - POC",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lease-review",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a1b2c3d4-0001-0001-0001-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "lease-review-poc-001"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\n\nif (!body || !body.lease_text) {\n  throw new Error('Missing lease_text in request body. Send a POST request with { \"lease_text\": \"...\" }');\n}\n\nconst leaseText = body.lease_text.trim();\n\nif (leaseText.length < 100) {\n  throw new Error('lease_text is too short. Please provide a full or partial lease document.');\n}\n\nreturn [{\n  json: {\n    lease_text: leaseText,\n    char_count: leaseText.length,\n    received_at: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "a1b2c3d4-0002-0002-0002-000000000002",
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a commercial real estate paralegal assistant. Your job is to extract structured data from commercial lease documents. You must return ONLY valid JSON — no markdown, no explanation, no code fences. If a field is not present in the document, return null for that field. Never invent or assume data that is not explicitly stated in the lease text."
+            },
+            {
+              "role": "user",
+              "content": "Extract the following fields from this commercial lease document and return them as a JSON object.\n\nFields to extract:\n- tenant_name: Full legal name of the tenant\n- landlord_name: Full legal name of the landlord\n- property_address: Full address of the leased property\n- lease_commencement_date: Date the lease begins (ISO format YYYY-MM-DD if possible)\n- lease_expiry_date: Date the lease ends (ISO format YYYY-MM-DD if possible)\n- break_option_dates: Array of break option dates and conditions, or empty array if none\n- rent_amount: Annual or monthly rent amount with currency\n- rent_review_mechanism: How and when rent is reviewed (e.g. open market, CPI, fixed increase)\n- rent_escalation_schedule: Any fixed rent step-ups with dates and amounts\n- security_deposit: Deposit amount and terms, or null\n- permitted_use: Stated permitted use of the property\n- assignment_rights: Whether tenant can assign or sublet, and conditions\n- tenant_break_conditions: Any conditions that must be met for a break option to be valid\n- service_charge: Service charge or CAM obligations if stated\n- key_tenant_obligations: Array of main tenant obligations explicitly stated\n- key_landlord_obligations: Array of main landlord obligations explicitly stated\n\nLEASE DOCUMENT:\n{{ $json.lease_text }}\n\nReturn ONLY the JSON object. No explanation."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0
+        }
+      },
+      "id": "a1b2c3d4-0003-0003-0003-000000000003",
+      "name": "Extract Lease Fields",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a commercial real estate lawyer reviewing lease documents for risk. Your job is to identify unusual, non-standard, or potentially high-risk clauses that a buyer's legal team should review carefully. You must return ONLY valid JSON — no markdown, no explanation, no code fences. Be specific: quote the relevant clause text and explain in plain language why it is flagged. Only flag genuinely unusual items — do not flag standard commercial lease provisions."
+            },
+            {
+              "role": "user",
+              "content": "Review this commercial lease document and identify any unusual, non-standard, or high-risk clauses. For each flagged item return:\n- clause_type: Category of clause (e.g. 'Break condition', 'Rent review', 'Assignment restriction', 'Liability cap', 'Alienation')\n- risk_level: 'high', 'medium', or 'low'\n- quoted_text: The exact text from the document that is flagged (max 200 characters)\n- plain_language_explanation: What this means in plain English and why it is unusual or risky (2-3 sentences max)\n- recommended_action: What the legal team should do (e.g. 'Negotiate removal', 'Seek clarification', 'Note and accept', 'Escalate to senior counsel')\n\nReturn a JSON object with a single key 'flagged_clauses' containing an array of flagged items. If nothing unusual is found, return { \"flagged_clauses\": [] }.\n\nLEASE DOCUMENT:\n{{ $json.lease_text }}\n\nReturn ONLY the JSON object. No explanation."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0
+        }
+      },
+      "id": "a1b2c3d4-0004-0004-0004-000000000004",
+      "name": "Flag Unusual Clauses",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [680, 420]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse extraction output\nlet extractedFields = {};\ntry {\n  const rawExtraction = $('Extract Lease Fields').first().json.message.content;\n  const cleaned = rawExtraction.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n  extractedFields = JSON.parse(cleaned);\n} catch(e) {\n  extractedFields = { parse_error: 'Could not parse extraction output', raw: $('Extract Lease Fields').first().json.message.content };\n}\n\n// Parse flagging output\nlet flaggedClauses = [];\ntry {\n  const rawFlags = $('Flag Unusual Clauses').first().json.message.content;\n  const cleaned = rawFlags.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n  const parsed = JSON.parse(cleaned);\n  flaggedClauses = parsed.flagged_clauses || [];\n} catch(e) {\n  flaggedClauses = [{ parse_error: 'Could not parse flagging output' }];\n}\n\n// Count risk levels\nconst highRisk = flaggedClauses.filter(c => c.risk_level === 'high').length;\nconst mediumRisk = flaggedClauses.filter(c => c.risk_level === 'medium').length;\nconst lowRisk = flaggedClauses.filter(c => c.risk_level === 'low').length;\n\n// Build final output\nconst output = {\n  meta: {\n    processed_at: new Date().toISOString(),\n    model: 'gpt-4o',\n    workflow_version: '1.0.0',\n    disclaimer: 'AI-generated draft. Every field must be reviewed and verified by a qualified lawyer before use in any legal or financial decision.'\n  },\n  summary: {\n    total_flagged_clauses: flaggedClauses.length,\n    high_risk_clauses: highRisk,\n    medium_risk_clauses: mediumRisk,\n    low_risk_clauses: lowRisk,\n    review_recommendation: highRisk > 0 ? 'PRIORITY REVIEW REQUIRED — high risk clauses identified' : mediumRisk > 0 ? 'REVIEW RECOMMENDED — medium risk clauses identified' : 'STANDARD REVIEW — no high-risk clauses identified'\n  },\n  extracted_fields: extractedFields,\n  flagged_clauses: flaggedClauses\n};\n\nreturn [{ json: output }];"
+      },
+      "id": "a1b2c3d4-0005-0005-0005-000000000005",
+      "name": "Assemble Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json, null, 2) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "a1b2c3d4-0006-0006-0006-000000000006",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Extract Lease Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Flag Unusual Clauses",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Lease Fields": {
+      "main": [
+        [
+          {
+            "node": "Assemble Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flag Unusual Clauses": {
+      "main": [
+        [
+          {
+            "node": "Assemble Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assemble Output": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-09-19T08:00:00.000Z",
+  "versionId": "1"
+}
