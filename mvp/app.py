@@ -192,32 +192,34 @@ with tab_extract:
                 st.session_state.corrections.pop(selected, None)
                 st.session_state.signoffs.pop(selected, None)
 
-                progress_area = st.empty()
                 lease_text = st.session_state.lease_texts[selected]
 
-                # step 1 -- show while we prepare
-                with progress_area.container():
-                    st.info(
-                        "**Step 1 of 4 — Reading the lease** \n\n"
-                        "The full lease text is being sent to GPT-4o. "
-                        "The model reads every clause, looking for the standard fields "
-                        "(tenant, landlord, rent, dates, break options) and any unusual "
-                        "provisions that deviate from NRAU defaults."
+                # show full-page progress -- replaces everything below the button
+                progress_area = st.container()
+                with progress_area:
+                    st.markdown("---")
+                    step1 = st.info(
+                        "⏳ **Step 1 of 4 — Reading the lease** \n\n"
+                        "Sending the full lease text to GPT-4o. The model reads every "
+                        "clause looking for standard fields (tenant, landlord, rent, dates, "
+                        "break options) and any provisions that deviate from NRAU defaults."
                     )
+                    step2 = st.empty()
+                    step3 = st.empty()
+                    step4 = st.empty()
 
                 start = time.time()
 
-                # step 2 -- run GPT-4o extraction
-                with progress_area.container():
-                    st.info(
-                        "**Step 2 of 4 — GPT-4o extracting fields** \n\n"
-                        "GPT-4o is extracting all structured fields and identifying flagged clauses. "
-                        "It uses a Portuguese law-aware prompt that maps SENHORIO → landlord, "
-                        "ARRENDATÁRIO → tenant, and checks against 10 high-risk NRAU clause patterns. "
-                        "This typically takes 10–15 seconds depending on lease length."
-                    )
+                # GPT-4o extraction
+                step2.info(
+                    "⏳ **Step 2 of 4 — GPT-4o extracting fields** \n\n"
+                    "GPT-4o is extracting all structured fields and flagged clauses using "
+                    "a Portuguese law-aware prompt. Maps SENHORIO → landlord, "
+                    "ARRENDATÁRIO → tenant, and checks 10 high-risk NRAU clause patterns. "
+                    "This takes 10–15 seconds."
+                )
 
-                with st.spinner(""):
+                with st.spinner("GPT-4o working..."):
                     result = process_lease(
                         lease_text,
                         filename=selected,
@@ -226,39 +228,29 @@ with tab_extract:
 
                 result["meta"]["reviewer_email"] = reviewer_email
                 extraction_time = time.time() - start
-                st.session_state.extraction_results[selected] = result
-                st.session_state.last_selected = selected
+                step1.success("✅ **Step 1 of 4 — Lease read successfully**")
+                step2.success("✅ **Step 2 of 4 — GPT-4o extraction complete**")
 
-                # step 3 -- run Claude validation in parallel with a thread
-                # so the UI can update while it runs
+                # Claude validation
                 validation = None
                 if run_validation:
-                    with progress_area.container():
-                        st.info(
-                            "**Step 3 of 4 — Claude Haiku 4.5 validating** \n\n"
-                            "Anthropic's fastest model is now independently cross-checking "
-                            "GPT-4o's output against the same lease text. "
-                            "Two AI models, same document, independent reads -- "
-                            "their agreement score tells you how confident to be in the result. "
-                            "Running in parallel to keep things fast."
-                        )
-
-                    with st.spinner(""):
-                        validation_result = [None]
-                        def _run_validation():
-                            validation_result[0] = validate_extraction(lease_text, result)
-                        t = threading.Thread(target=_run_validation)
-                        t.start()
-                        t.join(timeout=30)
-                        validation = validation_result[0]
-
+                    step3.info(
+                        "⏳ **Step 3 of 4 — Claude Haiku 4.5 validating** \n\n"
+                        "Anthropic's fastest model is independently cross-checking GPT-4o's "
+                        "output against the same lease. Two AI models, same document, "
+                        "independent reads — their agreement score shows how confident "
+                        "you can be in the result."
+                    )
+                    with st.spinner("Claude Haiku validating..."):
+                        validation = validate_extraction(lease_text, result)
                     if validation:
                         st.session_state.validation_results[selected] = validation
+                    step3.success("✅ **Step 3 of 4 — Claude validation complete**")
 
-                # step 4 -- save and sync
-                with progress_area.container():
-                    with st.spinner("**Step 4 of 4 — Saving and syncing results...**"):
-                        pass
+                # save and sync
+                step4.info("⏳ **Step 4 of 4 — Saving and syncing...**")
+                st.session_state.extraction_results[selected] = result
+                st.session_state.last_selected = selected
 
                 cost_breakdown = {
                     "extraction_tokens_in": 2000,
@@ -295,11 +287,11 @@ with tab_extract:
                 except Exception:
                     pass
 
-                progress_area.empty()
+                step4.success("✅ **Step 4 of 4 — Saved and synced**")
                 st.success(
-                    f"✅ Extraction complete in {extraction_time:.1f}s · "
+                    f"✅ **All done in {extraction_time:.1f}s · "
                     f"Cost: €{cost_breakdown['total_cost_eur']:.4f} · "
-                    f"Scroll down to see results ↓"
+                    f"Scroll down to see results ↓**"
                 )
 
         # ── display results ────────────────────────────────────────────────────
