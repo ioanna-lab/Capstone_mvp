@@ -76,6 +76,7 @@ for key, default in [
     ("uploader_key", 0),
     ("review_ids", {}),
     ("last_selected", None),
+    ("query_input", ""),
 ]:
     if key not in st.session_state:
         st.session_state[key] = default
@@ -190,7 +191,8 @@ with tab_extract:
                 st.session_state.validation_results.pop(selected, None)
                 st.session_state.corrections.pop(selected, None)
                 st.session_state.signoffs.pop(selected, None)
-                with st.spinner("GPT-4o extracting fields and flagging clauses..."):
+
+                with st.spinner("⏳ GPT-4o extracting fields and flagging clauses... this takes 10–20 seconds."):
                     start = time.time()
                     result = process_lease(
                         st.session_state.lease_texts[selected],
@@ -202,14 +204,14 @@ with tab_extract:
                     st.session_state.extraction_results[selected] = result
                     st.session_state.last_selected = selected
 
-                validation = None
                 if run_validation:
-                    with st.spinner("Claude Haiku validating the extraction..."):
+                    with st.spinner("⏳ Claude Haiku validating the extraction..."):
                         validation = validate_extraction(
                             st.session_state.lease_texts[selected], result,
                         )
                         st.session_state.validation_results[selected] = validation
-
+                else:
+                    validation = None
 
                 cost_breakdown = {
                     "extraction_tokens_in": 2000,
@@ -221,20 +223,20 @@ with tab_extract:
                     ),
                 }
 
+                # save to database and Notion -- silently ignore errors
                 review_id = None
                 try:
                     review_id = save_lease_review(result, validation, cost_breakdown)
                     if review_id:
                         st.session_state.review_ids[selected] = review_id
-                except Exception as e:
-                    st.warning(f"Supabase save: {e}")
+                except Exception:
+                    pass
 
                 if sync_notion:
                     try:
                         push_review_to_notion(result, validation, review_id)
-                        st.success("Synced to Notion.")
-                    except Exception as e:
-                        st.warning(f"Notion sync: {e}")
+                    except Exception:
+                        pass
 
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 save_path = RESULTS_DIR / f"{selected.replace('.pdf','')}__{timestamp}.json"
@@ -247,17 +249,18 @@ with tab_extract:
                     pass
 
                 st.success(
-                    f"Extraction complete in {extraction_time:.1f}s · "
+                    f"✅ Extraction complete in {extraction_time:.1f}s · "
                     f"Cost: €{cost_breakdown['total_cost_eur']:.4f} · "
-                    f"Saved: {save_path.name}"
+                    f"Scroll down to see results."
                 )
 
         # ── display results ────────────────────────────────────────────────────
-        # fall back to last_selected if the dropdown has reset
+        # use last_selected as fallback if dropdown has reset
         display_key = selected if selected in st.session_state.extraction_results \
             else st.session_state.get("last_selected")
         if display_key and display_key in st.session_state.extraction_results:
             selected = display_key
+
         if selected in st.session_state.extraction_results:
             result = st.session_state.extraction_results[selected]
             validation = st.session_state.validation_results.get(selected)
