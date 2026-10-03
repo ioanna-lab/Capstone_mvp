@@ -75,6 +75,7 @@ for key, default in [
     ("corrections", {}),
     ("uploader_key", 0),
     ("review_ids", {}),
+    ("last_selected", None),
 ]:
     if key not in st.session_state:
         st.session_state[key] = default
@@ -199,6 +200,7 @@ with tab_extract:
                     result["meta"]["reviewer_email"] = reviewer_email
                     extraction_time = time.time() - start
                     st.session_state.extraction_results[selected] = result
+                    st.session_state.last_selected = selected
 
                 validation = None
                 if run_validation:
@@ -251,6 +253,11 @@ with tab_extract:
                 )
 
         # ── display results ────────────────────────────────────────────────────
+        # fall back to last_selected if the dropdown has reset
+        display_key = selected if selected in st.session_state.extraction_results \
+            else st.session_state.get("last_selected")
+        if display_key and display_key in st.session_state.extraction_results:
+            selected = display_key
         if selected in st.session_state.extraction_results:
             result = st.session_state.extraction_results[selected]
             validation = st.session_state.validation_results.get(selected)
