@@ -192,26 +192,63 @@ with tab_extract:
                 st.session_state.corrections.pop(selected, None)
                 st.session_state.signoffs.pop(selected, None)
 
-                with st.spinner("⏳ GPT-4o extracting fields and flagging clauses... this takes 10–20 seconds."):
-                    start = time.time()
+                progress_area = st.empty()
+
+                with progress_area.container():
+                    st.info(
+                        "**Step 1 of 4 — Reading the lease** \n\n"
+                        "The full lease text is being sent to GPT-4o. "
+                        "The model reads every clause, looking for the standard fields "
+                        "(tenant, landlord, rent, dates, break options) and any unusual provisions "
+                        "that deviate from NRAU defaults."
+                    )
+
+                start = time.time()
+
+                with st.spinner(""):
+                    with progress_area.container():
+                        st.info(
+                            "**Step 2 of 4 — GPT-4o extracting fields** \n\n"
+                            "GPT-4o is extracting all structured fields and identifying flagged clauses. "
+                            "It uses a Portuguese law-aware prompt that maps SENHORIO → landlord, "
+                            "ARRENDATÁRIO → tenant, and checks against 10 high-risk NRAU clause patterns. "
+                            "This typically takes 10–20 seconds depending on lease length."
+                        )
                     result = process_lease(
                         st.session_state.lease_texts[selected],
                         filename=selected,
                         model=chosen_model,
                     )
-                    result["meta"]["reviewer_email"] = reviewer_email
-                    extraction_time = time.time() - start
-                    st.session_state.extraction_results[selected] = result
-                    st.session_state.last_selected = selected
+
+                result["meta"]["reviewer_email"] = reviewer_email
+                extraction_time = time.time() - start
+                st.session_state.extraction_results[selected] = result
+                st.session_state.last_selected = selected
 
                 if run_validation:
-                    with st.spinner("⏳ Claude Haiku validating the extraction..."):
+                    with st.spinner(""):
+                        with progress_area.container():
+                            st.info(
+                                "**Step 3 of 4 — Claude Haiku validating** \n\n"
+                                "A second AI model (Anthropic's Claude Haiku) is independently "
+                                "reviewing the same lease and comparing its findings to GPT-4o's output. "
+                                "This cross-model validation catches extraction errors and gives you "
+                                "an agreement confidence score. Fields where the two models disagree "
+                                "are flagged for extra human attention."
+                            )
                         validation = validate_extraction(
                             st.session_state.lease_texts[selected], result,
                         )
-                        st.session_state.validation_results[selected] = validation
+                    st.session_state.validation_results[selected] = validation
                 else:
                     validation = None
+
+                with progress_area.container():
+                    st.info(
+                        "**Step 4 of 4 — Saving and syncing** \n\n"
+                        "Saving results to the database, syncing to Notion, "
+                        "and preparing the review for display..."
+                    )
 
                 cost_breakdown = {
                     "extraction_tokens_in": 2000,
@@ -248,10 +285,11 @@ with tab_extract:
                 except Exception:
                     pass
 
+                progress_area.empty()
                 st.success(
                     f"✅ Extraction complete in {extraction_time:.1f}s · "
                     f"Cost: €{cost_breakdown['total_cost_eur']:.4f} · "
-                    f"Scroll down to see results."
+                    f"Scroll down to see results ↓"
                 )
 
         # ── display results ────────────────────────────────────────────────────
@@ -617,8 +655,7 @@ with tab_query:
                 st.markdown("### Answer")
                 st.markdown(res["answer"])
                 st.caption(
-                    f"Sources: {', '.join(res['sources'])} · "
-                    f"{res['chunks_retrieved']} passages retrieved · "
+                    f"Sources: {', '.join(res.get('sources', []))} · "
                     "Verify all findings against source documents."
                 )
 
