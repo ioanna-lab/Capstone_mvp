@@ -1,7 +1,7 @@
 langchain==0.3.7
 langchain-openai==0.2.6
 langchain-text-splitters==0.3.2
-streamlit==1.40.0
+streamlit==1.45.1
 pypdf==5.1.0
 langsmith==0.1.147
 python-dotenv==1.0.1
@@ -10,3 +10,7 @@ anthropic>=0.39.0,<1.0.0
 supabase==2.15.0
 notion-client==2.2.1
 pandas==2.2.3
+# pinned explicitly: langchain 0.3.7 needs numpy < 2, and an unpinned pyarrow
+# (used by st.dataframe) pulls a version that requires numpy 2
+numpy==1.26.4
+pyarrow==17.0.0
