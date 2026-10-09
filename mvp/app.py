@@ -18,6 +18,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+# Render's free tier blocks outbound SMTP (ports 25/465/587), so sending
+# mail there only hangs until the connection times out. Render sets the
+# RENDER environment variable on its servers; locally it is not set, so
+# email keeps working when the app runs on a laptop.
+EMAIL_ENABLED = os.environ.get("RENDER") is None
+
+
 def render_lease_status(area):
     """Sidebar list of loaded leases with their review status.
     ⏳ not analysed yet · 🔍 AI analysed, awaiting lawyer sign-off · ✅ signed off"""
@@ -295,7 +302,7 @@ with tab_extract:
                     step4.markdown(
                         "Saving the review to the database, syncing to Notion and "
                         "emailing the results. This step is the slowest and can take up to "
-                        "a minute. Please keep the page open."
+                        "3 minutes. Please keep the page open."
                     )
                     st.session_state.extraction_results[selected] = result
                     st.session_state.last_selected = selected
@@ -311,7 +318,7 @@ with tab_extract:
                     }
 
                     save_start = time.time()
-                    with step4, timed_spinner("Saving, syncing to Notion and emailing... up to a minute"):
+                    with step4, timed_spinner("Saving, syncing to Notion and emailing... up to 3 minutes"):
                         # save to database and Notion -- silently ignore errors
                         review_id = None
                         try:
@@ -335,14 +342,17 @@ with tab_extract:
                         # Email: show failures instead of hiding them, so we can see
                         # why a message did not arrive (credentials, quota, provider).
                         email_error = None
-                        try:
-                            email_response = send_extraction_email(result, reviewer_email, selected)
-                            print(f"[email] sent to {reviewer_email}: {email_response!r}")
-                            if email_response is False:
-                                email_error = "send_extraction_email returned False"
-                        except Exception as e:
-                            email_error = f"{type(e).__name__}: {e}"
-                            print(f"[email] FAILED for {reviewer_email}: {email_error}")
+                        if not EMAIL_ENABLED:
+                            print("[email] skipped: running on Render (SMTP blocked on free tier)")
+                        else:
+                            try:
+                                email_response = send_extraction_email(result, reviewer_email, selected)
+                                print(f"[email] sent to {reviewer_email}: {email_response!r}")
+                                if email_response is False:
+                                    email_error = "send_extraction_email returned False"
+                            except Exception as e:
+                                email_error = f"{type(e).__name__}: {e}"
+                                print(f"[email] FAILED for {reviewer_email}: {email_error}")
 
                     # timings: total = everything the user waited for, split by step
                     save_time = time.time() - save_start
@@ -355,6 +365,12 @@ with tab_extract:
                     if "lease_status_area" in globals():
                         render_lease_status(lease_status_area)
 
+                    if not EMAIL_ENABLED:
+                        st.info(
+                            "📧 Email notification is disabled on the hosted demo: Render's "
+                            "free tier blocks outbound email (SMTP). It works when the app "
+                            "runs locally. Results are saved and synced as normal."
+                        )
                     if email_error:
                         st.warning(
                             f"⚠️ Results saved, but the email to {reviewer_email} "
