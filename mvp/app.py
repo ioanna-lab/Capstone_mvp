@@ -18,6 +18,22 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+def render_lease_status(area):
+    """Sidebar list of loaded leases with their review status.
+    ⏳ not analysed yet · 🔍 AI analysed, awaiting lawyer sign-off · ✅ signed off"""
+    with area.container():
+        st.markdown("**Loaded:**")
+        for fname in st.session_state.lease_texts:
+            if fname in st.session_state.signoffs:
+                icon = "✅"
+            elif fname in st.session_state.extraction_results:
+                icon = "🔍"
+            else:
+                icon = "⏳"
+            st.markdown(f"{icon} {fname}")
+        st.caption("⏳ not analysed · 🔍 analysed, awaiting sign-off · ✅ signed off")
+
+
 def timed_spinner(text):
     """Spinner with a live elapsed-seconds counter (Streamlit >= 1.43).
     Falls back to a plain spinner on older versions."""
@@ -119,10 +135,10 @@ with st.sidebar:
                     st.session_state.lease_texts
                 )
             st.success(f"{len(st.session_state.lease_texts)} lease(s) indexed.")
-        st.markdown("**Loaded:**")
-        for fname in st.session_state.lease_texts:
-            signed = "✅" if fname in st.session_state.signoffs else "⏳"
-            st.markdown(f"{signed} {fname}")
+        # Placeholder so the list can be redrawn right after an extraction
+        # finishes (the sidebar is drawn before the extraction runs).
+        lease_status_area = st.empty()
+        render_lease_status(lease_status_area)
 
     if st.button("Clear all leases"):
         for key in ["lease_texts", "vectorstore", "extraction_results",
@@ -316,10 +332,17 @@ with tab_extract:
                         with open(save_path, "w") as f:
                             json.dump({"result": result, "validation": validation}, f, indent=2)
 
+                        # Email: show failures instead of hiding them, so we can see
+                        # why a message did not arrive (credentials, quota, provider).
+                        email_error = None
                         try:
-                            send_extraction_email(result, reviewer_email, selected)
-                        except Exception:
-                            pass
+                            email_response = send_extraction_email(result, reviewer_email, selected)
+                            print(f"[email] sent to {reviewer_email}: {email_response!r}")
+                            if email_response is False:
+                                email_error = "send_extraction_email returned False"
+                        except Exception as e:
+                            email_error = f"{type(e).__name__}: {e}"
+                            print(f"[email] FAILED for {reviewer_email}: {email_error}")
 
                     # timings: total = everything the user waited for, split by step
                     save_time = time.time() - save_start
@@ -328,6 +351,15 @@ with tab_extract:
 
                     step4.update(label=f"Step 4 of 4 — Saved and synced ({save_time:.1f}s)",
                                  state="complete", expanded=False)
+                    # refresh the sidebar list now that this lease is analysed
+                    if "lease_status_area" in globals():
+                        render_lease_status(lease_status_area)
+
+                    if email_error:
+                        st.warning(
+                            f"⚠️ Results saved, but the email to {reviewer_email} "
+                            f"could not be sent. Error: {email_error}"
+                        )
                     st.success(
                         f"✅ **All done in {total_time:.1f}s** "
                         f"(extraction {extraction_time:.1f}s · "
