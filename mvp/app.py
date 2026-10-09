@@ -214,25 +214,23 @@ with tab_extract:
 
                     lease_text = st.session_state.lease_texts[selected]
 
-                    # show full-page progress -- replaces everything below the button
-                    progress_area = st.container()
-                    with progress_area:
-                        st.markdown("---")
-                        step1 = st.info(
-                            "⏳ **Step 1 of 4 — Reading the lease** \n\n"
-                            "Sending the full lease text to GPT-4o. The model reads every "
-                            "clause looking for standard fields (tenant, landlord, rent, dates, "
-                            "break options) and any provisions that deviate from NRAU defaults."
-                        )
-                        step2 = st.empty()
-                        step3 = st.empty()
-                        step4 = st.empty()
+                    # Progress checklist. Each step is an st.status box: it shows a
+                    # spinner while running and switches to a green checkmark when we
+                    # call .update(state="complete"). Steps are created only when they
+                    # start, so the list grows as the run progresses.
+                    st.markdown("---")
+                    step1 = st.status("Step 1 of 4 — Reading the lease", expanded=True)
+                    step1.markdown(
+                        "Sending the full lease text to GPT-4o. The model reads every "
+                        "clause looking for standard fields (tenant, landlord, rent, dates, "
+                        "break options) and any provisions that deviate from NRAU defaults."
+                    )
 
                     start = time.time()
 
                     # GPT-4o extraction
-                    step2.info(
-                        "⏳ **Step 2 of 4 — GPT-4o extracting fields** \n\n"
+                    step2 = st.status("Step 2 of 4 — GPT-4o extracting fields", expanded=True)
+                    step2.markdown(
                         "GPT-4o is extracting all structured fields and flagged clauses using "
                         "a Portuguese law-aware prompt. Maps SENHORIO → landlord, "
                         "ARRENDATÁRIO → tenant, and checks 10 high-risk NRAU clause patterns. "
@@ -240,7 +238,7 @@ with tab_extract:
                         "API load. Please do not refresh the page."
                     )
 
-                    with timed_spinner("GPT-4o working... usually 15-45 seconds"):
+                    with step2, timed_spinner("GPT-4o working... usually 15-45 seconds"):
                         result = process_lease(
                             lease_text,
                             filename=selected,
@@ -249,30 +247,36 @@ with tab_extract:
 
                     result["meta"]["reviewer_email"] = reviewer_email
                     extraction_time = time.time() - start
-                    step1.success("✅ **Step 1 of 4 — Lease read successfully**")
-                    step2.success("✅ **Step 2 of 4 — GPT-4o extraction complete**")
+                    step1.update(label="Step 1 of 4 — Lease read successfully",
+                                 state="complete", expanded=False)
+                    step2.update(label=f"Step 2 of 4 — GPT-4o extraction complete ({extraction_time:.1f}s)",
+                                 state="complete", expanded=False)
 
                     # Claude validation
                     validation = None
                     if run_validation:
-                        step3.info(
-                            "⏳ **Step 3 of 4 — Claude Haiku 4.5 validating** \n\n"
+                        validation_start = time.time()
+                        step3 = st.status("Step 3 of 4 — Claude Haiku 4.5 validating", expanded=True)
+                        step3.markdown(
                             "Anthropic's fastest model is independently cross-checking GPT-4o's "
                             "output against the same lease. Two AI models, same document, "
                             "independent reads — their agreement score shows how confident "
                             "you can be in the result. This usually takes 5-20 seconds."
                         )
-                        with timed_spinner("Claude Haiku validating... usually 5-20 seconds"):
+                        with step3, timed_spinner("Claude Haiku validating... usually 5-20 seconds"):
                             validation = validate_extraction(lease_text, result)
                         if validation:
                             st.session_state.validation_results[selected] = validation
-                        step3.success("✅ **Step 3 of 4 — Claude validation complete**")
+                        step3.update(
+                            label=f"Step 3 of 4 — Claude validation complete ({time.time() - validation_start:.1f}s)",
+                            state="complete", expanded=False)
 
                     # save and sync
-                    step4.info(
-                        "⏳ **Step 4 of 4 — Saving and syncing** \n\n"
+                    step4 = st.status("Step 4 of 4 — Saving and syncing", expanded=True)
+                    step4.markdown(
                         "Saving the review to the database, syncing to Notion and "
-                        "emailing the results. This usually takes 3-15 seconds."
+                        "emailing the results. This step is the slowest and can take up to "
+                        "a minute. Please keep the page open."
                     )
                     st.session_state.extraction_results[selected] = result
                     st.session_state.last_selected = selected
@@ -287,34 +291,46 @@ with tab_extract:
                         ),
                     }
 
-                    # save to database and Notion -- silently ignore errors
-                    review_id = None
-                    try:
-                        review_id = save_lease_review(result, validation, cost_breakdown)
-                        if review_id:
-                            st.session_state.review_ids[selected] = review_id
-                    except Exception:
-                        pass
-
-                    if sync_notion:
+                    save_start = time.time()
+                    with step4, timed_spinner("Saving, syncing to Notion and emailing... up to a minute"):
+                        # save to database and Notion -- silently ignore errors
+                        review_id = None
                         try:
-                            push_review_to_notion(result, validation, review_id)
+                            review_id = save_lease_review(result, validation, cost_breakdown)
+                            if review_id:
+                                st.session_state.review_ids[selected] = review_id
                         except Exception:
                             pass
 
-                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                    save_path = RESULTS_DIR / f"{selected.replace('.pdf','')}__{timestamp}.json"
-                    with open(save_path, "w") as f:
-                        json.dump({"result": result, "validation": validation}, f, indent=2)
+                        if sync_notion:
+                            try:
+                                push_review_to_notion(result, validation, review_id)
+                            except Exception:
+                                pass
 
-                    try:
-                        send_extraction_email(result, reviewer_email, selected)
-                    except Exception:
-                        pass
+                        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                        save_path = RESULTS_DIR / f"{selected.replace('.pdf','')}__{timestamp}.json"
+                        with open(save_path, "w") as f:
+                            json.dump({"result": result, "validation": validation}, f, indent=2)
 
-                    step4.success("✅ **Step 4 of 4 — Saved and synced**")
+                        try:
+                            send_extraction_email(result, reviewer_email, selected)
+                        except Exception:
+                            pass
+
+                    # timings: total = everything the user waited for, split by step
+                    save_time = time.time() - save_start
+                    total_time = time.time() - start
+                    validation_time = max(total_time - extraction_time - save_time, 0)
+
+                    step4.update(label=f"Step 4 of 4 — Saved and synced ({save_time:.1f}s)",
+                                 state="complete", expanded=False)
                     st.success(
-                        f"✅ **All done in {extraction_time:.1f}s · "
+                        f"✅ **All done in {total_time:.1f}s** "
+                        f"(extraction {extraction_time:.1f}s · "
+                        f"validation {validation_time:.1f}s · "
+                        f"saving and syncing {save_time:.1f}s)  \n"
+                        f"**"
                         f"Cost: €{cost_breakdown['total_cost_eur']:.4f} · "
                         f"Scroll down to see results ↓**"
                     )
