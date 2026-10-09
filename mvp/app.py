@@ -219,19 +219,24 @@ with tab_extract:
                     # call .update(state="complete"). Steps are created only when they
                     # start, so the list grows as the run progresses.
                     st.markdown("---")
+                    # Step 1 is local and instant: the PDF text was already extracted
+                    # when the lease was uploaded. We confirm it is loaded and complete
+                    # the step before the GPT-4o call, so the steps run one after another.
                     step1 = st.status("Step 1 of 4 — Reading the lease", expanded=True)
                     step1.markdown(
-                        "Sending the full lease text to GPT-4o. The model reads every "
-                        "clause looking for standard fields (tenant, landlord, rent, dates, "
-                        "break options) and any provisions that deviate from NRAU defaults."
+                        "Loading the text extracted from the PDF so the full lease, "
+                        "every clause, can be sent to GPT-4o."
                     )
+                    step1.update(
+                        label=f"Step 1 of 4 — Lease loaded ({len(lease_text):,} characters)",
+                        state="complete", expanded=False)
 
                     start = time.time()
 
                     # GPT-4o extraction
                     step2 = st.status("Step 2 of 4 — GPT-4o extracting fields", expanded=True)
                     step2.markdown(
-                        "GPT-4o is extracting all structured fields and flagged clauses using "
+                        "GPT-4o reads every clause and extracts all structured fields and flagged clauses using "
                         "a Portuguese law-aware prompt. Maps SENHORIO → landlord, "
                         "ARRENDATÁRIO → tenant, and checks 10 high-risk NRAU clause patterns. "
                         "This usually takes 15-45 seconds, depending on lease length and "
@@ -247,8 +252,6 @@ with tab_extract:
 
                     result["meta"]["reviewer_email"] = reviewer_email
                     extraction_time = time.time() - start
-                    step1.update(label="Step 1 of 4 — Lease read successfully",
-                                 state="complete", expanded=False)
                     step2.update(label=f"Step 2 of 4 — GPT-4o extraction complete ({extraction_time:.1f}s)",
                                  state="complete", expanded=False)
 
