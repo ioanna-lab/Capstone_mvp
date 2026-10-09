@@ -3,6 +3,11 @@
 **Student:** Ioanna Renta · GitHub: ioannarenta
 **Cohort:** October 2026
 
+**Live demo:** https://capstone-mvp-k2pj.onrender.com/
+
+> Hosted on Render's free tier. If the app has been idle, the first load can
+> take up to a minute while the service wakes up.
+
 ---
 
 ## What This Is
@@ -55,7 +60,7 @@ Capstone_mvp/
     ├── portugal_law.py                ← NRAU legal context + model pricing
     ├── database.py                    ← Supabase persistence
     ├── notion_sync.py                 ← Notion integration
-    ├── notifier.py                    ← Gmail email notification
+    ├── notifier.py                    ← Gmail email notification (local only, see Known Limitations)
     ├── proposal.py                    ← acquisition proposal generator
     ├── stress_test.py                 ← parallel stress test + determinism
     ├── utils.py                       ← PDF extraction, JSON parsing
@@ -100,7 +105,14 @@ The app runs standalone on Render without any local server needed.
 4. Build command: `pip install -r requirements.txt`
 5. Start command: as in `Procfile`
 6. Add all `.env` variables in Render's Environment tab
-7. Deploy
+7. Also add `PYTHON_VERSION` = `3.12.7` in the Environment tab. Render does not
+   read `runtime.txt` and otherwise defaults to the newest Python (3.14), where
+   pinned dependencies clash (e.g. pyarrow requiring NumPy 2)
+8. Deploy. After changing dependencies or the Python version, use
+   **Manual Deploy → Clear build cache & deploy**
+
+The app detects when it runs on Render (via Render's `RENDER` environment
+variable) and skips the email step automatically. No configuration needed.
 
 ---
 
@@ -143,14 +155,36 @@ python3 run_stress_test.py --leases 10 --threads 4
 # Or via terminal — see evaluation/stress_test.md
 ```
 
-**What the stress test proves:**
+**What the stress test shows:**
 - The system processes multiple leases simultaneously (not sequentially)
-- 4 threads delivers ~4x speedup over sequential processing
-- Temperature=0 ensures identical output on repeated runs of the same document
+- Parallel threads cut total time significantly: 4 leases on 3 threads took
+  85.9s vs ~180s sequential (2.1× speedup), limited by API latency
+- At temperature=0, structured fields (dates, rent, NIF) were identical across
+  3 runs; free-text fields showed minor punctuation variation
 - Cost is ~€0.025 per lease regardless of thread count
 
 See `evaluation/stress_test.md` for full documentation, results interpretation,
 and production scaling estimates.
+
+---
+
+## Known Limitations
+
+- **Email notifications on the hosted demo.** Render's free tier blocks outbound
+  SMTP (ports 25/465/587) since September 2025. Email attempts hung until
+  timeout and added up to 3 minutes per run. The app now detects Render and
+  skips the email step with an on-screen notice. Email works when running
+  locally. Production fix: a transactional email API over HTTPS (e.g. Resend,
+  Brevo) or a paid Render instance.
+- **Cold start.** Free-tier services sleep after inactivity; the first request
+  can take up to a minute.
+- **Processing time.** A full run (extraction, validation, save and sync)
+  typically takes 30-90 seconds. Production would move integrations to a
+  background job queue.
+- **Synthetic corpus only.** All 200 leases are AI-generated. Accuracy on real
+  leases is untested and is the first gate of the pilot (≥85% on 20 real leases).
+- **Free-text determinism.** Structured values are stable across runs at
+  temperature=0; descriptions and obligation lists can vary slightly in wording.
 
 ---
 
